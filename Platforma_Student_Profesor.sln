@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34728.123
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API", "Platforma_Student_Profesor\API.csproj", "{13FC4CD0-E3DC-4CF9-8D8B-055FC164A12D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DAL", "DAL\DAL.csproj", "{0CE724A4-2E89-4C50-BC94-413A42EA4D32}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MODEL", "MODEL\MODEL.csproj", "{DA2DFDE9-DBF9-4BAE-B9EF-D4C03BC39555}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{13FC4CD0-E3DC-4CF9-8D8B-055FC164A12D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{13FC4CD0-E3DC-4CF9-8D8B-055FC164A12D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{13FC4CD0-E3DC-4CF9-8D8B-055FC164A12D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{13FC4CD0-E3DC-4CF9-8D8B-055FC164A12D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0CE724A4-2E89-4C50-BC94-413A42EA4D32}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0CE724A4-2E89-4C50-BC94-413A42EA4D32}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0CE724A4-2E89-4C50-BC94-413A42EA4D32}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0CE724A4-2E89-4C50-BC94-413A42EA4D32}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DA2DFDE9-DBF9-4BAE-B9EF-D4C03BC39555}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA2DFDE9-DBF9-4BAE-B9EF-D4C03BC39555}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DA2DFDE9-DBF9-4BAE-B9EF-D4C03BC39555}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DA2DFDE9-DBF9-4BAE-B9EF-D4C03BC39555}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {74B4E251-F04F-4018-B273-2FEA9D62DB90}
+	EndGlobalSection
+EndGlobal
