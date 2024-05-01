@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.Collections.Specialized;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MODEL.Models
 {
@@ -6,7 +7,7 @@ namespace MODEL.Models
     {
         [Column(TypeName = ("DATETIME"))]
         public DateTime EnterDate { get; set; }
-        public bool HasPrivilage { get; set; }
+        public string Privilage { get; set; }
         public bool IsMember { get; set; }
         public User User { get; set; }
         public int UserID { get; set; }

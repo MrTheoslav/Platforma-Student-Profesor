@@ -32,7 +32,7 @@ namespace DAL.Migrations
                     RoleID = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     Name = table.Column<string>(type: "TEXT", nullable: false),
-                    isApproved = table.Column<bool>(type: "INTEGER", nullable: false)
+                    IsApproved = table.Column<bool>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -89,7 +89,7 @@ namespace DAL.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "AssigmnentUsers",
+                name: "UserAssigmnents",
                 columns: table => new
                 {
                     AssigmnentID = table.Column<int>(type: "INTEGER", nullable: false),
@@ -99,15 +99,15 @@ namespace DAL.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AssigmnentUsers", x => new { x.UserID, x.AssigmnentID });
+                    table.PrimaryKey("PK_UserAssigmnents", x => new { x.UserID, x.AssigmnentID });
                     table.ForeignKey(
-                        name: "FK_AssigmnentUsers_Assignments_AssigmnentID",
+                        name: "FK_UserAssigmnents_Assignments_AssigmnentID",
                         column: x => x.AssigmnentID,
                         principalTable: "Assignments",
                         principalColumn: "AssignmentID",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_AssigmnentUsers_Users_UserID",
+                        name: "FK_UserAssigmnents_Users_UserID",
                         column: x => x.UserID,
                         principalTable: "Users",
                         principalColumn: "UserID",
@@ -121,7 +121,7 @@ namespace DAL.Migrations
                     UserID = table.Column<int>(type: "INTEGER", nullable: false),
                     RepositoryID = table.Column<int>(type: "INTEGER", nullable: false),
                     EnterDate = table.Column<DateTime>(type: "DATETIME", nullable: false),
-                    HasPrivilage = table.Column<bool>(type: "INTEGER", nullable: false),
+                    Privilage = table.Column<string>(type: "TEXT", nullable: false),
                     IsMember = table.Column<bool>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
@@ -142,14 +142,14 @@ namespace DAL.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_AssigmnentUsers_AssigmnentID",
-                table: "AssigmnentUsers",
-                column: "AssigmnentID");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Assignments_RepositoryID",
                 table: "Assignments",
                 column: "RepositoryID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserAssigmnents_AssigmnentID",
+                table: "UserAssigmnents",
+                column: "AssigmnentID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Users_RoleID",
@@ -166,7 +166,7 @@ namespace DAL.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "AssigmnentUsers");
+                name: "UserAssigmnents");
 
             migrationBuilder.DropTable(
                 name: "UsersRepository");

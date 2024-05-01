@@ -17,7 +17,7 @@ namespace MODEL.Models
         public double Mark { get; set; }
         public string Comment { get; set; }
         public Repository Repository { get; set; }
-        public ICollection<AssigmnentUser> AssigmnentUsers { get; set; }
+        public ICollection<UserAssigmnent> UserAssigmnents { get; set; }
         public int RepositoryID { get; set; }
     }
 }

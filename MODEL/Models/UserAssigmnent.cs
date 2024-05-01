@@ -2,7 +2,7 @@
 
 namespace MODEL.Models
 {
-    public class AssigmnentUser
+    public class UserAssigmnent
     {
         public int AssigmnentID { get; set; }
         public int UserID { get; set; }

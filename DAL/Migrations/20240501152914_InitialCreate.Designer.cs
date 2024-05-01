@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DAL.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20240425065553_InitialCreate")]
+    [Migration("20240501152914_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -19,27 +19,6 @@ namespace DAL.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.4");
-
-            modelBuilder.Entity("MODEL.Models.AssigmnentUser", b =>
-                {
-                    b.Property<int>("UserID")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("AssigmnentID")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<bool>("IsCreated")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("SendDate")
-                        .HasColumnType("DATETIME");
-
-                    b.HasKey("UserID", "AssigmnentID");
-
-                    b.HasIndex("AssigmnentID");
-
-                    b.ToTable("AssigmnentUsers");
-                });
 
             modelBuilder.Entity("MODEL.Models.Assignment", b =>
                 {
@@ -102,12 +81,12 @@ namespace DAL.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<bool>("IsApproved")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("TEXT");
-
-                    b.Property<bool>("isApproved")
-                        .HasColumnType("INTEGER");
 
                     b.HasKey("RoleID");
 
@@ -149,6 +128,27 @@ namespace DAL.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("MODEL.Models.UserAssigmnent", b =>
+                {
+                    b.Property<int>("UserID")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("AssigmnentID")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("IsCreated")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("SendDate")
+                        .HasColumnType("DATETIME");
+
+                    b.HasKey("UserID", "AssigmnentID");
+
+                    b.HasIndex("AssigmnentID");
+
+                    b.ToTable("UserAssigmnents");
+                });
+
             modelBuilder.Entity("MODEL.Models.UserRepository", b =>
                 {
                     b.Property<int>("UserID")
@@ -160,36 +160,18 @@ namespace DAL.Migrations
                     b.Property<DateTime>("EnterDate")
                         .HasColumnType("DATETIME");
 
-                    b.Property<bool>("HasPrivilage")
-                        .HasColumnType("INTEGER");
-
                     b.Property<bool>("IsMember")
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("Privilage")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
                     b.HasKey("UserID", "RepositoryID");
 
                     b.HasIndex("RepositoryID");
 
                     b.ToTable("UsersRepository");
-                });
-
-            modelBuilder.Entity("MODEL.Models.AssigmnentUser", b =>
-                {
-                    b.HasOne("MODEL.Models.Assignment", "Assignment")
-                        .WithMany("AssigmnentUsers")
-                        .HasForeignKey("AssigmnentID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("MODEL.Models.User", "User")
-                        .WithMany("AssigmnentUsers")
-                        .HasForeignKey("UserID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Assignment");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("MODEL.Models.Assignment", b =>
@@ -214,6 +196,25 @@ namespace DAL.Migrations
                     b.Navigation("Role");
                 });
 
+            modelBuilder.Entity("MODEL.Models.UserAssigmnent", b =>
+                {
+                    b.HasOne("MODEL.Models.Assignment", "Assignment")
+                        .WithMany("UserAssigmnents")
+                        .HasForeignKey("AssigmnentID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MODEL.Models.User", "User")
+                        .WithMany("UserAssigmnents")
+                        .HasForeignKey("UserID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Assignment");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("MODEL.Models.UserRepository", b =>
                 {
                     b.HasOne("MODEL.Models.Repository", "Repository")
@@ -235,7 +236,7 @@ namespace DAL.Migrations
 
             modelBuilder.Entity("MODEL.Models.Assignment", b =>
                 {
-                    b.Navigation("AssigmnentUsers");
+                    b.Navigation("UserAssigmnents");
                 });
 
             modelBuilder.Entity("MODEL.Models.Repository", b =>
@@ -252,7 +253,7 @@ namespace DAL.Migrations
 
             modelBuilder.Entity("MODEL.Models.User", b =>
                 {
-                    b.Navigation("AssigmnentUsers");
+                    b.Navigation("UserAssigmnents");
 
                     b.Navigation("UserRepositories");
                 });

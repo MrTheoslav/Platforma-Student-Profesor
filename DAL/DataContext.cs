@@ -10,7 +10,7 @@ namespace DAL
 
         }
 
-        public DbSet<AssigmnentUser> AssigmnentUsers { get; set; }
+        public DbSet<UserAssigmnent> UserAssigmnents { get; set; }
         public DbSet<Assignment> Assignments { get; set; }
         public DbSet<Repository> Repository { get; set; }
         public DbSet<Role> Roles { get; set; }
@@ -19,15 +19,15 @@ namespace DAL
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<AssigmnentUser>()
+            modelBuilder.Entity<UserAssigmnent>()
                  .HasKey(au => new { au.UserID, au.AssigmnentID });
-            modelBuilder.Entity<AssigmnentUser>()
+            modelBuilder.Entity<UserAssigmnent>()
                 .HasOne(a => a.Assignment)
-                .WithMany(au => au.AssigmnentUsers)
+                .WithMany(au => au.UserAssigmnents)
                 .HasForeignKey(a => a.AssigmnentID);
-            modelBuilder.Entity<AssigmnentUser>()
+            modelBuilder.Entity<UserAssigmnent>()
                 .HasOne(u => u.User)
-                .WithMany(au => au.AssigmnentUsers)
+                .WithMany(au => au.UserAssigmnents)
                 .HasForeignKey(u => u.UserID);
             modelBuilder.Entity<UserRepository>()
                 .HasKey(ur => new { ur.UserID, ur.RepositoryID });

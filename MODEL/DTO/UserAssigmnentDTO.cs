@@ -1,6 +1,6 @@
 ﻿namespace MODEL.DTO
 {
-    public class AssigmnentUserDTO
+    public class UserAssigmnentDTO
     {
         public int AssigmnentID { get; set; }
         public int UserID { get; set; }

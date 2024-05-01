@@ -19,7 +19,7 @@ namespace MODEL.Models
         public DateTime EnterDate { get; set; }
         public Role Role { get; set; }
         public int RoleID { get; set; }
-        public ICollection<AssigmnentUser> AssigmnentUsers { get; set; }
+        public ICollection<UserAssigmnent> UserAssigmnents { get; set; }
         public ICollection<UserRepository> UserRepositories { get; set; }
     }
 }
