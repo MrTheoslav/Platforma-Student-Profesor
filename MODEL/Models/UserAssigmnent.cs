@@ -6,7 +6,9 @@ namespace MODEL.Models
     {
         public int AssigmnentID { get; set; }
         public int UserID { get; set; }
-        public bool IsCreated { get; set; }
+        public double Mark { get; set; }
+        public string Comment { get; set; }
+        public string Files { get; set; }
         [Column(TypeName = "DATETIME")]
         public DateTime SendDate { get; set; }
         public User User { get; set; }

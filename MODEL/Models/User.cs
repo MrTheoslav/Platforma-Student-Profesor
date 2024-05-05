@@ -17,6 +17,7 @@ namespace MODEL.Models
         public string Password { get; set; }
         [Column(TypeName = "DATETIME")]
         public DateTime EnterDate { get; set; }
+        public bool IsApproved { get; set; }
         public Role Role { get; set; }
         public int RoleID { get; set; }
         public ICollection<UserAssigmnent> UserAssigmnents { get; set; }

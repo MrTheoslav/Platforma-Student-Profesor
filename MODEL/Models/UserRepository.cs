@@ -7,7 +7,7 @@ namespace MODEL.Models
     {
         [Column(TypeName = ("DATETIME"))]
         public DateTime EnterDate { get; set; }
-        public string Privilage { get; set; }
+        public int Privilage { get; set; }
         public bool IsMember { get; set; }
         public User User { get; set; }
         public int UserID { get; set; }

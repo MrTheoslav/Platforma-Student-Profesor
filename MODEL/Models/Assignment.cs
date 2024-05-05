@@ -14,8 +14,7 @@ namespace MODEL.Models
         public DateTime StartDate { get; set; }
         [Column(TypeName = "DATETIME")]
         public DateTime EndDate { get; set; }
-        public double Mark { get; set; }
-        public string Comment { get; set; }
+     
         public Repository Repository { get; set; }
         public ICollection<UserAssigmnent> UserAssigmnents { get; set; }
         public int RepositoryID { get; set; }

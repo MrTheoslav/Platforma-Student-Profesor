@@ -3,6 +3,7 @@ using System;
 using DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DAL.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20240505183034_ChangeAssigment")]
+    partial class ChangeAssigment
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.4");
@@ -71,6 +74,9 @@ namespace DAL.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<bool>("IsApproved")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -92,9 +98,6 @@ namespace DAL.Migrations
 
                     b.Property<DateTime>("EnterDate")
                         .HasColumnType("DATETIME");
-
-                    b.Property<bool>("IsApproved")
-                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Password")
                         .IsRequired()
@@ -161,8 +164,9 @@ namespace DAL.Migrations
                     b.Property<bool>("IsMember")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("Privilage")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("Privilage")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
                     b.HasKey("UserID", "RepositoryID");
 

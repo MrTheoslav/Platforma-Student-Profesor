@@ -12,8 +12,6 @@ namespace MODEL.DTO
         public int FileSize { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-        public double Mark { get; set; }
-        public string Comment { get; set; }
         public int RepositoryID { get; set; }
     }
 }

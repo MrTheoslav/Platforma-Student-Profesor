@@ -7,7 +7,6 @@ namespace MODEL.Models
         [Key]
         public int RoleID { get; set; }
         public string Name { get; set; }
-        public bool IsApproved { get; set; }
         public ICollection<User> Users { get; set; }
     }
 }
