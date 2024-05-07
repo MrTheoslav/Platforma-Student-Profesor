@@ -79,7 +79,7 @@ namespace API.Controllers
            
 
 
-               if (!_repositoryService.CreateRepository(repositoryMap, userId))
+               if (!_repositoryService.CreateRepository(repositoryMap))
                {
                    return BadRequest("Coś poszło nie tak podczas tworzenia");
                }
@@ -103,7 +103,7 @@ namespace API.Controllers
             var repositoryMap = _mapper.Map<Repository>(repositoryUpdate);
 
 
-            if (!_repositoryService.UpdateRepository(repositoryMap, User))
+            if (!_repositoryService.UpdateRepository(repositoryMap))
                 return BadRequest("Coś poszło nie tak podczas zmiany");
 
             return Ok("Zaktualizowano repozytorium");

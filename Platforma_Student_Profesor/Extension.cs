@@ -26,6 +26,8 @@ namespace Platforma_student_profesor
             services.AddScoped<IValidator<RegisterUserDto>, RegisterUserDtoValidator >();
             services.AddScoped<IValidator<LoginDto>, LoginUserDtoValidator>();
             services.AddScoped<IAuthorizationHandler,ResourceOperationRequirementHandler> ();
+            services.AddScoped<IUserContextService,UserContextService> ();
+            
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             return services;
         }

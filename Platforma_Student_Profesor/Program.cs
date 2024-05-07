@@ -46,6 +46,7 @@ builder.Services.AddAuthentication(option =>
 });
 
 builder.Services.AddInjection();
+builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddDbContext<DataContext>(options =>
 {

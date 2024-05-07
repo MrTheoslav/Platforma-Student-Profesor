@@ -14,10 +14,13 @@ namespace API.Services
         private readonly DataContext _context;
         private readonly IAuthorizationService _authorizationService;
 
-        public RepositoryService(DataContext context, IAuthorizationService authorizationService)
+        private readonly IUserContextService _userContextService;
+
+        public RepositoryService(DataContext context, IAuthorizationService authorizationService, IUserContextService userContextService)
         {
             _context = context;
             _authorizationService = authorizationService;
+            _userContextService = userContextService;
         }
 
         public bool Save()
@@ -26,10 +29,10 @@ namespace API.Services
             return saved > 0 ? true : false;
         }
 
-        public bool CreateRepository(Repository repository, int userID)
+        public bool CreateRepository(Repository repository)
         {
-            
-            repository.CreatedById = userID;
+
+            repository.CreatedById = _userContextService.GetUserId;
            _context.Add(repository);
             var saveRepo = Save();
 
@@ -38,7 +41,7 @@ namespace API.Services
                 EnterDate = DateTime.Now,
                 Privilage = 2,
                 IsMember = true,
-                UserID = userID,
+                UserID = (int)_userContextService.GetUserId,
                 RepositoryID = repository.RepositoryID
             };
 
@@ -56,11 +59,11 @@ namespace API.Services
              
         }
 
-        public bool UpdateRepository(Repository repository, ClaimsPrincipal user)
+        public bool UpdateRepository(Repository repository)
         {
 
 
-            var authorizationResult = _authorizationService.AuthorizeAsync(user, repository, new ResourceOperationRequirement(ResourceOperation.Update)).Result;
+            var authorizationResult = _authorizationService.AuthorizeAsync(_userContextService.User, repository, new ResourceOperationRequirement(ResourceOperation.Update)).Result;
 
             if(!authorizationResult.Succeeded)
             {
@@ -71,16 +74,16 @@ namespace API.Services
             return Save();
         }
 
-        public bool DeleteRepository(Repository repository,ClaimsPrincipal user, int userId)
+        public bool DeleteRepository(Repository repository)
         {
-            var authorizationResult = _authorizationService.AuthorizeAsync(user, repository, new ResourceOperationRequirement(ResourceOperation.Update)).Result;
+            var authorizationResult = _authorizationService.AuthorizeAsync(_userContextService.User, repository, new ResourceOperationRequirement(ResourceOperation.Update)).Result;
 
             if (!authorizationResult.Succeeded)
             {
                 return false;
             }
 
-            var userRepositoryToDelate = _context.UsersRepository.Where(x => x.UserID == userId).Where(u => u.RepositoryID == repository.RepositoryID).FirstOrDefault();
+            var userRepositoryToDelate = _context.UsersRepository.Where(x => x.UserID == _userContextService.GetUserId).Where(u => u.RepositoryID == repository.RepositoryID).FirstOrDefault();
             _context.Remove(repository);
             _context.Remove(userRepositoryToDelate);
             return Save();
