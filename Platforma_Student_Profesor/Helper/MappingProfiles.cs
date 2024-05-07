@@ -13,6 +13,12 @@ namespace API.Helper
             CreateMap<Role, RoleDTO>()
                     .ForMember(dst => dst.RoleID, opt => opt.MapFrom(src => src.RoleID))
                     .ForMember(dst => dst.Name, opt => opt.MapFrom(src => src.Name));
+            CreateMap<RoleDTO, Role>()
+                    .ForMember(dst => dst.RoleID, opt => opt.MapFrom(src => src.RoleID))
+                    .ForMember(dst => dst.Name, opt => opt.MapFrom(src => src.Name));
+
+            CreateMap<Repository, RepositoryDTO>();
+            CreateMap<RepositoryDTO, Repository>();
         }
     }
 }

@@ -9,6 +9,7 @@ namespace MODEL.Models
         [Required]
         public string Name { get; set; }
         public string Topic { get; set; }
+        public int? CreatedById { get; set; }
         public ICollection<Assignment> Assignments { get; set; }
         public ICollection<UserRepository> UserRepositories { get; set; }
     }

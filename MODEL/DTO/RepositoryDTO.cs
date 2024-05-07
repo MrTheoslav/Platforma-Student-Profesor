@@ -10,5 +10,6 @@ namespace MODEL.DTO
         [MinLength(1)]
         public string Name { get; set; } = string.Empty;
         public string Topic { get; set; }
+        public int? CreatedById { get; set; }
     }
 }

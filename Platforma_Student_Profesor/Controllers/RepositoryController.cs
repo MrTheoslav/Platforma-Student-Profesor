@@ -5,11 +5,14 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MODEL.DTO;
 using MODEL.Models;
+using System.Security.Claims;
 
 namespace API.Controllers
 {
+
     [ApiController]
     [Route("API/[controller]")]
+    [Authorize(Roles ="admin,teacher")]
     public class RepositoryController : ControllerBase
     {
         private readonly IRepositoryService _repositoryService;
@@ -56,28 +59,57 @@ namespace API.Controllers
 
 
 
-        /*   [HttpPost("{userID}")]
+           [HttpPost]
            [ProducesResponseType(201)]
            [ProducesResponseType(400)]
-           public IActionResult CreateRepository(int userID, [FromBody] RepositoryDTO repositoryCreate)
+           public IActionResult CreateRepository([FromBody] RepositoryDTO repositoryCreate)
            {
+            var userId = int.Parse(User.FindFirst(c => c.Type == ClaimTypes.NameIdentifier).Value);
+
                if (repositoryCreate == null)
                    return BadRequest("Repozytorium nie może być puste");
 
                if (!ModelState.IsValid)
                    return BadRequest("Coś poszło nie tak");
 
-               var repositoryMap = _mapper.Map<Repository>(repositoryCreate);
+               if(_repositoryService.RepositoryExistByName(repositoryCreate.Name))
+                return BadRequest("Istnieje repozytorium o takiej samej nazwie");
+
+                var repositoryMap = _mapper.Map<Repository>(repositoryCreate);
+           
 
 
-
-               if (!_repositoryService.CreateRepository(repositoryMap))
+               if (!_repositoryService.CreateRepository(repositoryMap, userId))
                {
                    return BadRequest("Coś poszło nie tak podczas tworzenia");
                }
 
                return Ok("Pomyślnie utworzono repozytorium");
-           }*/
+           }
+
+        [HttpPut]
+        public IActionResult UpdateRepository([FromBody] RepositoryDTO repositoryUpdate)
+        {
+            if (repositoryUpdate == null)
+                return BadRequest("Repozytorium do zmiany nie może być puste");
+
+            if (!ModelState.IsValid)
+                return BadRequest("Coś poszło nie tak");
+
+            if (!_repositoryService.RepositoryExist(repositoryUpdate.RepositoryID))
+                return BadRequest("Nie istenieje takie repozytorium");
+
+            //CreateBy must be same as before!!!!
+            var repositoryMap = _mapper.Map<Repository>(repositoryUpdate);
+
+
+            if (!_repositoryService.UpdateRepository(repositoryMap, User))
+                return BadRequest("Coś poszło nie tak podczas zmiany");
+
+            return Ok("Zaktualizowano repozytorium");
+        }
+
+
 
     }
 }

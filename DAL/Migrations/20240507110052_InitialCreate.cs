@@ -18,7 +18,8 @@ namespace DAL.Migrations
                     RepositoryID = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     Name = table.Column<string>(type: "TEXT", nullable: false),
-                    Topic = table.Column<string>(type: "TEXT", nullable: false)
+                    Topic = table.Column<string>(type: "TEXT", nullable: false),
+                    CreatedById = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -31,8 +32,7 @@ namespace DAL.Migrations
                 {
                     RoleID = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    Name = table.Column<string>(type: "TEXT", nullable: false),
-                    IsApproved = table.Column<bool>(type: "INTEGER", nullable: false)
+                    Name = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -49,8 +49,6 @@ namespace DAL.Migrations
                     FileSize = table.Column<int>(type: "INTEGER", nullable: false),
                     StartDate = table.Column<DateTime>(type: "DATETIME", nullable: false),
                     EndDate = table.Column<DateTime>(type: "DATETIME", nullable: false),
-                    Mark = table.Column<double>(type: "REAL", nullable: false),
-                    Comment = table.Column<string>(type: "TEXT", nullable: false),
                     RepositoryID = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
@@ -75,6 +73,7 @@ namespace DAL.Migrations
                     Email = table.Column<string>(type: "TEXT", nullable: false),
                     Password = table.Column<string>(type: "TEXT", nullable: false),
                     EnterDate = table.Column<DateTime>(type: "DATETIME", nullable: false),
+                    IsApproved = table.Column<bool>(type: "INTEGER", nullable: false),
                     RoleID = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
@@ -94,7 +93,9 @@ namespace DAL.Migrations
                 {
                     AssigmnentID = table.Column<int>(type: "INTEGER", nullable: false),
                     UserID = table.Column<int>(type: "INTEGER", nullable: false),
-                    IsCreated = table.Column<bool>(type: "INTEGER", nullable: false),
+                    Mark = table.Column<double>(type: "REAL", nullable: false),
+                    Comment = table.Column<string>(type: "TEXT", nullable: false),
+                    Files = table.Column<string>(type: "TEXT", nullable: false),
                     SendDate = table.Column<DateTime>(type: "DATETIME", nullable: false)
                 },
                 constraints: table =>
@@ -121,7 +122,7 @@ namespace DAL.Migrations
                     UserID = table.Column<int>(type: "INTEGER", nullable: false),
                     RepositoryID = table.Column<int>(type: "INTEGER", nullable: false),
                     EnterDate = table.Column<DateTime>(type: "DATETIME", nullable: false),
-                    Privilage = table.Column<string>(type: "TEXT", nullable: false),
+                    Privilage = table.Column<int>(type: "INTEGER", nullable: false),
                     IsMember = table.Column<bool>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>

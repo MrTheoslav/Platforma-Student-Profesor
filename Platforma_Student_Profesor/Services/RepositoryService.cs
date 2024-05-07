@@ -1,21 +1,23 @@
-﻿using API.Interfaces;
+﻿using API.Authorization;
+using API.Interfaces;
 using DAL;
 using Microsoft.AspNet.Identity;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using MODEL.Models;
+using System.Security.Claims;
 
 namespace API.Services
 {
     public class RepositoryService : IRepositoryService
     {
         private readonly DataContext _context;
+        private readonly IAuthorizationService _authorizationService;
 
-      
-
-        public RepositoryService(DataContext context)
+        public RepositoryService(DataContext context, IAuthorizationService authorizationService)
         {
             _context = context;
-           
+            _authorizationService = authorizationService;
         }
 
         public bool Save()
@@ -24,21 +26,63 @@ namespace API.Services
             return saved > 0 ? true : false;
         }
 
-        public bool CreateRepository(Repository repository)
+        public bool CreateRepository(Repository repository, int userID)
         {
-            var saved = _context.Add(repository);
-            return Save();
+            
+            repository.CreatedById = userID;
+           _context.Add(repository);
+            var saveRepo = Save();
+
+            var userRepository = new UserRepository()
+            {
+                EnterDate = DateTime.Now,
+                Privilage = 2,
+                IsMember = true,
+                UserID = userID,
+                RepositoryID = repository.RepositoryID
+            };
+
+            _context.Add(userRepository);
+            var saveUserRepo = Save();
+
+            if (saveUserRepo && saveRepo)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+             
         }
 
-        public bool UpdateRepository(Repository repository)
+        public bool UpdateRepository(Repository repository, ClaimsPrincipal user)
         {
+
+
+            var authorizationResult = _authorizationService.AuthorizeAsync(user, repository, new ResourceOperationRequirement(ResourceOperation.Update)).Result;
+
+            if(!authorizationResult.Succeeded)
+            {
+                return false;
+            }
+
             var saved = _context.Update(repository);
             return Save();
         }
 
-        public bool DeleteRepository(Repository repository)
+        public bool DeleteRepository(Repository repository,ClaimsPrincipal user, int userId)
         {
+            var authorizationResult = _authorizationService.AuthorizeAsync(user, repository, new ResourceOperationRequirement(ResourceOperation.Update)).Result;
+
+            if (!authorizationResult.Succeeded)
+            {
+                return false;
+            }
+
+            var userRepositoryToDelate = _context.UsersRepository.Where(x => x.UserID == userId).Where(u => u.RepositoryID == repository.RepositoryID).FirstOrDefault();
             _context.Remove(repository);
+            _context.Remove(userRepositoryToDelate);
             return Save();
         }
 
@@ -57,10 +101,20 @@ namespace API.Services
             return _context.Repository.Any(r => r.RepositoryID == id);
         }
 
+        public bool RepositoryExistByName(string name)
+        {
+            return _context.Repository.Any(r => r.Name.Trim().ToLower() == name.Trim().ToLower());
+        }
+
+
         public bool DeleteRepositoryForUser(List<Repository> repositories)
         {
             _context.RemoveRange(repositories);
+
+     
             return Save();
         }
+
+       
     }
 }
