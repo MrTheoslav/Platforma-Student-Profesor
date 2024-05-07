@@ -1,5 +1,6 @@
 ﻿using API.Interfaces;
 using API.Services;
+using API.Validators;
 using AutoMapper;
 using FluentValidation;
 using Microsoft.AspNet.Identity;
@@ -21,6 +22,7 @@ namespace Platforma_student_profesor
             services.AddScoped<IAccountService,AccountService> ();
             services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
             services.AddScoped<IValidator<RegisterUserDto>, RegisterUserDtoValidator >();
+            services.AddScoped<IValidator<LoginDto>, LoginUserDtoValidator>();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             return services;
         }

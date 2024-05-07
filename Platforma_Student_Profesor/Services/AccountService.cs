@@ -64,14 +64,14 @@ namespace API.Services
 
             if(user is  null)
             {
-                return "nie udało sie";
+                return "userIsNull";
             }
 
             var result = _passwordHasher.VerifyHashedPassword(user,user.Password,dto.Password);
 
             if(result == PasswordVerificationResult.Failed)
             {
-                return "nie udało sie";
+                return "PasswordNotCorrect";
             }
 
             var userRole = _roleService.GetRoleByID(user.RoleID);

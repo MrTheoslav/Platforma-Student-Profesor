@@ -28,7 +28,18 @@ namespace API.Controllers
         public IActionResult Login([FromBody] LoginDto dto)
         {
             string token = _accountService.GenerateJwt(dto);
-            return Ok(token);
+            if (token.Equals("userIsNull"))
+            {
+                return BadRequest("Incorrect password or emial");
+            }
+            else if (token.Equals("PasswordNotCorrect"))
+            {
+                return BadRequest("Incorrect password or emial");
+            }
+            else
+            {
+                return Ok(token);
+            }
         }
     }
 }
