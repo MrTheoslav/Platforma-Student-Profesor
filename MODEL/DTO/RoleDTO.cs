@@ -1,4 +1,5 @@
-﻿using MODEL.Models;
+﻿
+using MODEL.Models;
 
 namespace MODEL.DTO
 {
@@ -6,6 +7,6 @@ namespace MODEL.DTO
     {
         public int RoleID { get; set; }
         public string Name { get; set; }
-   
+
     }
 }

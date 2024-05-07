@@ -1,4 +1,5 @@
-﻿using API.Interfaces;
+﻿
+using API.Interfaces;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -41,7 +42,7 @@ namespace API.Controllers
         public IActionResult GetRepositoryById(int repositoryId)
         {
 
-            if(_repositoryService.RepositoryExist(repositoryId))
+            if (_repositoryService.RepositoryExist(repositoryId))
                 return NotFound();
 
             var repositoryDTO = _mapper.Map<RepositoryDTO>(_repositoryService.GetRepositoryByID(repositoryId));
@@ -55,28 +56,28 @@ namespace API.Controllers
 
 
 
-     /*   [HttpPost("{userID}")]
-        [ProducesResponseType(201)]
-        [ProducesResponseType(400)]
-        public IActionResult CreateRepository(int userID, [FromBody] RepositoryDTO repositoryCreate)
-        {
-            if (repositoryCreate == null)
-                return BadRequest("Repozytorium nie może być puste");
+        /*   [HttpPost("{userID}")]
+           [ProducesResponseType(201)]
+           [ProducesResponseType(400)]
+           public IActionResult CreateRepository(int userID, [FromBody] RepositoryDTO repositoryCreate)
+           {
+               if (repositoryCreate == null)
+                   return BadRequest("Repozytorium nie może być puste");
 
-            if (!ModelState.IsValid)
-                return BadRequest("Coś poszło nie tak");
+               if (!ModelState.IsValid)
+                   return BadRequest("Coś poszło nie tak");
 
-            var repositoryMap = _mapper.Map<Repository>(repositoryCreate);
+               var repositoryMap = _mapper.Map<Repository>(repositoryCreate);
 
-          
 
-            if (!_repositoryService.CreateRepository(repositoryMap))
-            {
-                return BadRequest("Coś poszło nie tak podczas tworzenia");
-            }
 
-            return Ok("Pomyślnie utworzono repozytorium");
-        }*/
+               if (!_repositoryService.CreateRepository(repositoryMap))
+               {
+                   return BadRequest("Coś poszło nie tak podczas tworzenia");
+               }
+
+               return Ok("Pomyślnie utworzono repozytorium");
+           }*/
 
     }
 }

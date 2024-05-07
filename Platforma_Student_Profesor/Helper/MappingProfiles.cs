@@ -5,7 +5,7 @@ using System.Security.Cryptography;
 
 namespace API.Helper
 {
-    public class MappingProfiles: Profile
+    public class MappingProfiles : Profile
     {
         public MappingProfiles()
         {

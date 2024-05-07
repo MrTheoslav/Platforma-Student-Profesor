@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿
+using Microsoft.EntityFrameworkCore;
 using MODEL.Models;
 
 namespace DAL
@@ -18,7 +19,17 @@ namespace DAL
         public DbSet<UserRepository> UsersRepository { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
+
         {
+            modelBuilder.Entity<User>()
+                .Property(u => u.Email)
+                .IsRequired();
+
+            modelBuilder.Entity<Role>()
+                .Property(u => u.Name)
+                .IsRequired();
+
+
             modelBuilder.Entity<UserAssigmnent>()
                  .HasKey(au => new { au.UserID, au.AssigmnentID });
             modelBuilder.Entity<UserAssigmnent>()

@@ -1,4 +1,5 @@
-﻿using API.Interfaces;
+﻿
+using API.Interfaces;
 using API.Services;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
@@ -10,6 +11,7 @@ namespace API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize(Roles = "admin")]
     public class RoleController : ControllerBase
     {
         private readonly IRoleService _roleService;
@@ -21,7 +23,7 @@ namespace API.Controllers
         }
 
 
-      
+  
         [HttpGet("AllRole")]
         [ProducesResponseType(200, Type = typeof(IEnumerable<Role>))]
         [ProducesResponseType(400)]
@@ -36,7 +38,7 @@ namespace API.Controllers
             return Ok(roleDTOs);
         }
 
-   
+
         [HttpGet("{roleId}")]
         [ProducesResponseType(200, Type = typeof(Role))]
         [ProducesResponseType(400)]
@@ -56,7 +58,7 @@ namespace API.Controllers
         }
 
 
-    
+   
         [HttpPost]
         [ProducesResponseType(201)]
         [ProducesResponseType(400)]
@@ -81,7 +83,8 @@ namespace API.Controllers
 
             return Ok("Pomyślnie utworzono role");
         }
-     
+
+
         [HttpPut("updateRole")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
@@ -106,7 +109,7 @@ namespace API.Controllers
             return Ok("Rola zaktualizowana");
 
         }
-
+      
         [HttpDelete("deleteRole/{roleID}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]

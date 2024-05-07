@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MODEL.Models
@@ -7,13 +8,13 @@ namespace MODEL.Models
     {
         [Key]
         public int UserID { get; set; }
-        [Required]
+    
         public string UserFirstName { get; set; }
-        [Required]
-        public string UserLastName {  get; set; }
-        [Required]
-        public string Email {  get; set; }
-        [Required]
+       
+        public string UserLastName { get; set; }
+      
+        public string Email { get; set; }
+     
         public string Password { get; set; }
         [Column(TypeName = "DATETIME")]
         public DateTime EnterDate { get; set; }

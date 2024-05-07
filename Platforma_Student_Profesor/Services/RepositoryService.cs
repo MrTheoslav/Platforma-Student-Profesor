@@ -1,5 +1,7 @@
 ﻿using API.Interfaces;
 using DAL;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNetCore.Identity;
 using MODEL.Models;
 
 namespace API.Services
@@ -8,9 +10,12 @@ namespace API.Services
     {
         private readonly DataContext _context;
 
+      
+
         public RepositoryService(DataContext context)
         {
             _context = context;
+           
         }
 
         public bool Save()
