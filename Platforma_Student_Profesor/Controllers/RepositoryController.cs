@@ -23,7 +23,7 @@ namespace API.Controllers
             _mapper = mapper;
         }
 
-
+        [Authorize(Roles = "admin,teacher,student")]
         [HttpGet("allRepository")]
         [ProducesResponseType(200, Type = typeof(IEnumerable<Repository>))]
         [ProducesResponseType(400)]
@@ -39,6 +39,7 @@ namespace API.Controllers
         }
 
 
+        [Authorize(Roles = "admin,teacher,student")]
         [HttpGet("repositoryById/{repositoryID}")]
         [ProducesResponseType(200, Type = typeof(Repository))]
         [ProducesResponseType(400)]
