@@ -9,10 +9,10 @@ using System.Security.Claims;
 
 namespace API.Controllers
 {
-
+    [Authorize]
     [ApiController]
     [Route("API/[controller]")]
-    [Authorize(Roles ="admin,teacher")]
+    
     public class RepositoryController : ControllerBase
     {
         private readonly IRepositoryService _repositoryService;
@@ -43,13 +43,13 @@ namespace API.Controllers
         [HttpGet("repositoryById/{repositoryID}")]
         [ProducesResponseType(200, Type = typeof(Repository))]
         [ProducesResponseType(400)]
-        public IActionResult GetRepositoryById(int repositoryId)
+        public IActionResult GetRepositoryById(int repositoryID)
         {
 
-            if (_repositoryService.RepositoryExist(repositoryId))
+            if (!_repositoryService.RepositoryExist(repositoryID))
                 return NotFound();
 
-            var repositoryDTO = _mapper.Map<RepositoryDTO>(_repositoryService.GetRepositoryByID(repositoryId));
+            var repositoryDTO = _mapper.Map<RepositoryDTO>(_repositoryService.GetRepositoryByID(repositoryID));
 
             if (!ModelState.IsValid)
             {
@@ -59,8 +59,8 @@ namespace API.Controllers
         }
 
 
-
-           [HttpPost]
+        [Authorize(Roles = "admin,teacher")]
+        [HttpPost]
            [ProducesResponseType(201)]
            [ProducesResponseType(400)]
            public IActionResult CreateRepository([FromBody] RepositoryDTO repositoryCreate)
@@ -87,7 +87,7 @@ namespace API.Controllers
 
                return Ok("Pomyślnie utworzono repozytorium");
            }
-
+        [Authorize(Roles = "admin,teacher")]
         [HttpPut]
         public IActionResult UpdateRepository([FromBody] RepositoryDTO repositoryUpdate)
         {

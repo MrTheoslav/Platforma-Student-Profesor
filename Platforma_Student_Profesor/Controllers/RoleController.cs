@@ -9,6 +9,7 @@ using MODEL.Models;
 
 namespace API.Controllers
 {
+    [AllowAnonymous]
     [ApiController]
     [Route("api/[controller]")]
     [Authorize(Roles = "admin")]
