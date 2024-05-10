@@ -20,13 +20,15 @@ namespace API.Services
 
         public AuthenticationSettings _authenticationSettings;
         private readonly IRoleService _roleService;
+        private readonly IUserContextService _userContextService;
 
-        public AccountService(DataContext context, IPasswordHasher<User> passwordHasher, AuthenticationSettings authenticationSettings, IRoleService roleService)
+        public AccountService(DataContext context, IPasswordHasher<User> passwordHasher, AuthenticationSettings authenticationSettings, IRoleService roleService, IUserContextService userContextService)
         {
             _context = context;
             _passwordHasher = passwordHasher;
             _authenticationSettings = authenticationSettings;
             _roleService = roleService;
+            _userContextService = userContextService;
         }
 
 
@@ -100,5 +102,14 @@ namespace API.Services
             return tokenHandler.WriteToken(token);
 
         }
+
+
+        public User GetUser()
+        {
+            return _context.Users.Where(u => u.UserID == _userContextService.GetUserId).FirstOrDefault();
+            
+        }
+
+
     }
 }

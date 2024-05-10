@@ -41,7 +41,7 @@ namespace API.Controllers
 
         [Authorize(Roles = "admin,teacher,student")]
         [HttpGet("repositoryById/{repositoryID}")]
-        [ProducesResponseType(200, Type = typeof(Repository))]
+        [ProducesResponseType(200, Type = typeof(RepositoryDTO))]
         [ProducesResponseType(400)]
         public IActionResult GetRepositoryById(int repositoryID)
         {

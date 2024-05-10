@@ -1,4 +1,5 @@
 ﻿using MODEL.DTO;
+using MODEL.Models;
 
 namespace API.Interfaces
 {
@@ -8,5 +9,6 @@ namespace API.Interfaces
         bool Save();
 
         string GenerateJwt(LoginDto dto);
+        User GetUser();
     }
 }
