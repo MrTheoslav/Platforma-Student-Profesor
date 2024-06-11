@@ -22,7 +22,7 @@ namespace API.Controllers
         }
 
         [HttpPost("register")]
-        public IActionResult RegisterUser([FromBody] RegisterUserDto registerUserDto)
+        public IActionResult RegisterUSer([FromBody] RegisterUserDto registerUserDto)
         {
             _accountService.RegisterUser(registerUserDto);
             return Ok();
