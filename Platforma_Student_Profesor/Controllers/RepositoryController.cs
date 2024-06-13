@@ -27,6 +27,8 @@ namespace API.Controllers
         [HttpGet("allRepository")]
         [ProducesResponseType(200, Type = typeof(IEnumerable<Repository>))]
         [ProducesResponseType(400)]
+
+
         public IActionResult GetRepository()
         {
             var repositoryDTOs = _mapper.Map<List<RepositoryDTO>>(_repositoryService.GetAllRepository());
@@ -43,6 +45,8 @@ namespace API.Controllers
         [HttpGet("repositoryById/{repositoryID}")]
         [ProducesResponseType(200, Type = typeof(RepositoryDTO))]
         [ProducesResponseType(400)]
+
+
         public IActionResult GetRepositoryById(int repositoryID)
         {
 
@@ -57,10 +61,10 @@ namespace API.Controllers
             }
             return Ok(repositoryDTO);
         }
+        
 
-
-        [Authorize(Roles = "admin,teacher")]
-        [HttpPost]
+            [Authorize(Roles = "admin,teacher")]
+            [HttpPost("createRepository")]
            [ProducesResponseType(201)]
            [ProducesResponseType(400)]
            public IActionResult CreateRepository([FromBody] RepositoryDTO repositoryCreate)
@@ -87,8 +91,10 @@ namespace API.Controllers
 
                return Ok("Pomyślnie utworzono repozytorium");
            }
+        
+
         [Authorize(Roles = "admin,teacher")]
-        [HttpPut]
+        [HttpPut("updateRepository")]
         public IActionResult UpdateRepository([FromBody] RepositoryDTO repositoryUpdate)
         {
             if (repositoryUpdate == null)
@@ -109,8 +115,10 @@ namespace API.Controllers
 
             return Ok("Zaktualizowano repozytorium");
         }
+
+        
         [Authorize(Roles = "admin,teacher")]
-        [HttpDelete]
+        [HttpDelete("deleteRepository")]
         public IActionResult RemoveStudentFromRepository([FromBody] UserRepositoryDTO userRepository)
         {
             if (userRepository == null)
@@ -131,8 +139,9 @@ namespace API.Controllers
             return Ok("Usunięto ucznia z repozytorium");
         }
 
+        
         [Authorize(Roles = "admin,teacher")]
-        [HttpPost]
+        [HttpPost("addStudentToRepository")]
         public IActionResult AddStudentToRepository([FromBody] UserRepositoryDTO userRepository)
         {
             if (userRepository == null)
@@ -151,9 +160,9 @@ namespace API.Controllers
 
             return Ok("Dodano ucznia do repozytorium");
         }
-
+        
         [Authorize(Roles = "admin,teacher")]
-        [HttpPost]
+        [HttpPost("AddAssigment")]
         public IActionResult AddAssignment(AssignmentDTO assignment)
         {
             if (assignment == null)
@@ -172,9 +181,10 @@ namespace API.Controllers
 
             return Ok("Zadanie zostało poprawnie utworzone.");
         }
+        
 
         [Authorize(Roles = "admin,teacher")]
-        [HttpPut]
+        [HttpPut("updateAssigment")]
         public IActionResult UpdateAssignment(AssignmentDTO assignmentUpdate)
         {
             if (assignmentUpdate == null)
@@ -197,7 +207,7 @@ namespace API.Controllers
         }
 
         [Authorize(Roles = "admin,teacher")]
-        [HttpDelete]
+        [HttpDelete("deleteAssigment")]
         public IActionResult DeleteAssignment(AssignmentDTO assignment)
         {
             if (assignment == null)
@@ -218,5 +228,7 @@ namespace API.Controllers
 
             return Ok("Usunięto zadanie");
         }
+        
+
     }
 }

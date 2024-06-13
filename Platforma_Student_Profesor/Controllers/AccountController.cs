@@ -1,4 +1,5 @@
 ﻿using API.Interfaces;
+using API.Services;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -68,5 +69,48 @@ namespace API.Controllers
 
             return Ok(user);
         }
+
+
+
+        [Authorize(Roles = "admin")]
+        [HttpGet("accountToConfirm")]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<UserDTO>))]
+        [ProducesResponseType(400)]
+        public IActionResult GetAccountsToConfirm()
+        {
+            var usersToConfirmDto = _mapper.Map<List<UserDTO>>(_accountService.GetUsersToConfirm());
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Coś poszło nie tak");
+            }
+            return Ok(usersToConfirmDto);
+        }
+
+
+        [Authorize(Roles = "admin")]
+        [HttpPost("confirmUSer/{userID}/{isApproved}")]
+        public IActionResult ConfirmUser(int userID, bool isApproved)
+        {
+            bool decision = _accountService.ConfirmUser(isApproved, userID);
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Coś poszło nie tak");
+            }
+
+            if (decision)
+            {
+                return Ok("Użytkownik zatwierdzony");
+
+            }
+            else
+            {
+                return BadRequest("Nie udało sie zatwierdzić użytkownika");
+            }
+
+        }
+
+
     }
 }

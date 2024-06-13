@@ -110,6 +110,39 @@ namespace API.Services
             
         }
 
+        public User GetUserById(int id)
+        {
+            return _context.Users.Where(u => u.UserID == id).FirstOrDefault();
+
+        }
+
+        public ICollection<User> GetUsersToConfirm()
+        {
+            return _context.Users.Where(u => u.IsApproved == false).ToList();
+        }
+
+
+        public bool ConfirmUser(bool decision, int userID)
+        {
+            User user = GetUserById(userID);
+
+            if(user is null)
+            {
+                return false;
+            }
+
+            if(decision == true)
+            {
+                user.IsApproved = true;
+                Save();
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+
+        }
 
     }
 }

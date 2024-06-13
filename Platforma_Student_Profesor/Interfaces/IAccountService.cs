@@ -10,5 +10,10 @@ namespace API.Interfaces
 
         string GenerateJwt(LoginDto dto);
         User GetUser();
+        User GetUserById(int id);
+
+        ICollection<User> GetUsersToConfirm();
+
+        bool ConfirmUser(bool decision, int userID);
     }
 }

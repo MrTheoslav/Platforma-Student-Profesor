@@ -99,7 +99,7 @@ namespace API.Services
             return _context.Repository.Where(r => r.RepositoryID == id).FirstOrDefault();
         }
 
-        public bool RepositoryExist(int id)
+        public bool RepositoryExists(int id)
         {
             return _context.Repository.Any(r => r.RepositoryID == id);
         }
@@ -213,5 +213,7 @@ namespace API.Services
 
             return Save();
         }
+
+     
     }
 }
