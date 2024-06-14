@@ -23,6 +23,7 @@ namespace API.Interfaces
         bool AssignmentExists(int id);
         bool UpdateAssignment(Assignment assignment);
         bool DeleteAssignment(Assignment assignment);
+        ICollection<Repository> GetRepositoryForUser();
 
     }
 }

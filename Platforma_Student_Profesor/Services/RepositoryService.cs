@@ -214,6 +214,26 @@ namespace API.Services
             return Save();
         }
 
+        public ICollection<Repository> GetRepositoryForUser()
+        {
+            int userId = (int)_userContextService.GetUserId;
+           
+            ICollection<UserRepository> userRepositories = _context.UsersRepository.Where(x => x.UserID == userId).ToList();
+            ICollection<Repository> userRepositoriesList = new List<Repository>();
+
+
+            foreach (UserRepository userRepository in userRepositories)
+            {
+              Repository repository =  _context.Repository.Where(r => r.RepositoryID == userRepository.RepositoryID).FirstOrDefault();
+                if (repository != null)
+                {
+                    userRepositoriesList.Add(repository);
+                }
+            }
+
+            return userRepositoriesList;
+        }
+
      
     }
 }

@@ -228,6 +228,24 @@ namespace API.Controllers
 
             return Ok("Usunięto zadanie");
         }
+
+        [Authorize(Roles = "admin,teacher,student")]
+        [HttpGet("repositoryForUser")]
+        [ProducesResponseType(200, Type = typeof(RepositoryDTO))]
+        [ProducesResponseType(400)]
+        public IActionResult GetRepositoryForUser()
+        {
+           
+            var repositoryDTOs = _mapper.Map<List<RepositoryDTO>>(_repositoryService.GetRepositoryForUser());
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Coś poszło nie tak");
+            }
+            return Ok(repositoryDTOs);
+
+
+        }
         
 
     }
