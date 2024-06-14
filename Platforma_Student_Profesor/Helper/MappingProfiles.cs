@@ -33,6 +33,23 @@ namespace API.Helper
               .ForMember(dst => dst.Email, opt => opt.MapFrom(src => src.Email))
               .ForMember(dst => dst.EnterDate, opt => opt.MapFrom(src => src.EnterDate));
 
+            CreateMap<UserAssigmnentDTO, UserAssigmnent>()
+                .ForMember(dst => dst.AssigmnentID, opt => opt.MapFrom(src => src.AssigmnentID))
+                .ForMember(dst => dst.UserID, opt => opt.MapFrom(src => src.UserID))
+                .ForMember(dst => dst.Mark, opt => opt.MapFrom(src => src.Mark))
+                .ForMember(dst => dst.Comment, opt => opt.MapFrom(src => src.Comment))
+                .ForMember(dst => dst.Files, opt => opt.MapFrom(src => src.Files))
+                .ForMember(dst => dst.SendDate, opt => opt.MapFrom(src => src.SendDate)); 
+            CreateMap<UserAssigmnent, UserAssigmnentDTO>()
+                .ForMember(dst => dst.AssigmnentID, opt => opt.MapFrom(src => src.AssigmnentID))
+                .ForMember(dst => dst.UserID, opt => opt.MapFrom(src => src.UserID))
+                .ForMember(dst => dst.Mark, opt => opt.MapFrom(src => src.Mark))
+                .ForMember(dst => dst.Comment, opt => opt.MapFrom(src => src.Comment))
+                .ForMember(dst => dst.Files, opt => opt.MapFrom(src => src.Files))
+                .ForMember(dst => dst.SendDate, opt => opt.MapFrom(src => src.SendDate));
+                
+                
+                
         }
     }
 }

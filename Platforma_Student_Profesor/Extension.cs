@@ -20,6 +20,7 @@ namespace Platforma_student_profesor
         public static IServiceCollection AddInjection (this IServiceCollection services)
         {
             services.AddScoped<IRepositoryService,RepositoryService> ();
+            services.AddScoped<IFileService,FileService> ();
             services.AddScoped<IRoleService,RoleService>();
             services.AddScoped<IAccountService,AccountService> ();
             services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();

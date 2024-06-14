@@ -104,9 +104,9 @@ namespace API.Services
             return Save();
         }
 
-
-
-
-
+        public string GetRepositoryName(int assignmentID)
+        {
+            return _context.Repository.Where(r => r.RepositoryID == _context.Assignments.Where(a => a.AssignmentID == assignmentID).FirstOrDefault().RepositoryID).FirstOrDefault().Name;
+        }
     }
 }
