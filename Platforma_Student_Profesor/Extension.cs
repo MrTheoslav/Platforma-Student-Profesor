@@ -17,17 +17,18 @@ namespace Platforma_student_profesor
 {
     public static class Extension
     {
-        public static IServiceCollection AddInjection (this IServiceCollection services)
+        public static IServiceCollection AddInjection(this IServiceCollection services)
         {
-            services.AddScoped<IRepositoryService,RepositoryService> ();
-            services.AddScoped<IFileService,FileService> ();
-            services.AddScoped<IRoleService,RoleService>();
-            services.AddScoped<IAccountService,AccountService> ();
+            services.AddScoped<IRepositoryService, RepositoryService>();
+            services.AddScoped<IAssigmentService, AssigmentService>();
+            services.AddScoped<IFileService, FileService>();
+            services.AddScoped<IRoleService, RoleService>();
+            services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
-            services.AddScoped<IValidator<RegisterUserDto>, RegisterUserDtoValidator >();
+            services.AddScoped<IValidator<RegisterUserDto>, RegisterUserDtoValidator>();
             services.AddScoped<IValidator<LoginDto>, LoginUserDtoValidator>();
-            services.AddScoped<IAuthorizationHandler,ResourceOperationRequirementHandler> ();
-            services.AddScoped<IUserContextService,UserContextService> ();
+            services.AddScoped<IAuthorizationHandler, ResourceOperationRequirementHandler>();
+            services.AddScoped<IUserContextService, UserContextService>();
             services.AddCors();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             return services;
