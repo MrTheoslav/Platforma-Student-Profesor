@@ -39,12 +39,12 @@ namespace API.Services
 
         public bool AddAssignment(Assignment assignment)
         {
-            var authorizationResult = _authorizationService.AuthorizeAsync(_userContextService.User, assignment, new ResourceOperationRequirement(ResourceOperation.Update)).Result;
+            //var authorizationResult = _authorizationService.AuthorizeAsync(_userContextService.User, assignment, new ResourceOperationRequirement(ResourceOperation.Update)).Result;
 
-            if (!authorizationResult.Succeeded)
-            {
-                return false;
-            }
+            //if (!authorizationResult.Succeeded)
+            //{
+            //    return false;
+            //}
 
             _context.Add(assignment);
 

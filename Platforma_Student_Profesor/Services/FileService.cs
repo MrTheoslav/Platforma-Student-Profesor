@@ -16,9 +16,10 @@ namespace API.Services
         {
             try
             {
-                //var fullFilePath = Path.Combine(filePath, $"{GetRepositoryName(userAssigmnent.AssigmnentID)}", $"{userAssigmnent.Assignment.Name}", $"{userAssigmnent.User.UserID}");
-
-                var fullFilePath = filePath;
+                var repID = GetRepository(userAssigmnent.AssigmnentID).RepositoryID;
+                var assID = userAssigmnent.AssigmnentID;
+                var usID = userAssigmnent.UserID;
+                var fullFilePath = Path.Combine(filePath, repID.ToString(), assID.ToString(), usID.ToString());
 
                 if (!Directory.Exists(fullFilePath))
                 {
@@ -33,14 +34,15 @@ namespace API.Services
                 }
                 return true;
             }
-            catch
+            catch//(Exception)
             {
                 return false;
             }
         }
-        public string GetRepositoryName(int assignmentID)
+        public Repository GetRepository(int assignmentID)
         {
-            return _context.Repository.Where(r => r.RepositoryID == _context.Assignments.Where(a => a.AssignmentID == assignmentID).FirstOrDefault().RepositoryID).FirstOrDefault().Name;
+            var repID = _context.Assignments.Where(a=>a.AssignmentID == assignmentID).FirstOrDefault().RepositoryID;
+            return _context.Repository.Where(r => r.RepositoryID == repID).FirstOrDefault();
         }
     }
 }

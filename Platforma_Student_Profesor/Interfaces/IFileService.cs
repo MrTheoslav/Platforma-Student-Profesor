@@ -4,7 +4,7 @@ namespace API.Interfaces
 {
     public interface IFileService
     {
-        string GetRepositoryName(int assignmentID);
+        Repository GetRepository(int assignmentID);
         Task<bool> WriteFile(string filePath, UserAssigmnent userAssigmnent, IFormFile file);
     }
 }

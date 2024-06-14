@@ -47,7 +47,24 @@ namespace API.Helper
                 .ForMember(dst => dst.Comment, opt => opt.MapFrom(src => src.Comment))
                 .ForMember(dst => dst.Files, opt => opt.MapFrom(src => src.Files))
                 .ForMember(dst => dst.SendDate, opt => opt.MapFrom(src => src.SendDate));
+
+            CreateMap<AssignmentDTO, Assignment>()
+                .ForMember(dst => dst.AssignmentID, opt => opt.MapFrom(src => src.AssignmentID))
+                .ForMember(dst => dst.Name, opt => opt.MapFrom(src => src.Name))
+                .ForMember(dst => dst.FileSize, opt => opt.MapFrom(src => src.FileSize))
+                .ForMember(dst => dst.StartDate, opt => opt.MapFrom(src => src.StartDate))
+                .ForMember(dst => dst.EndDate, opt => opt.MapFrom(src => src.EndDate))
+                .ForMember(dst => dst.RepositoryID, opt => opt.MapFrom(src => src.RepositoryID));
+            CreateMap<Assignment, AssignmentDTO>()
+                .ForMember(dst => dst.AssignmentID, opt => opt.MapFrom(src => src.AssignmentID))
+                .ForMember(dst => dst.Name, opt => opt.MapFrom(src => src.Name))
+                .ForMember(dst => dst.FileSize, opt => opt.MapFrom(src => src.FileSize))
+                .ForMember(dst => dst.StartDate, opt => opt.MapFrom(src => src.StartDate))
+                .ForMember(dst => dst.EndDate, opt => opt.MapFrom(src => src.EndDate))
+                .ForMember(dst => dst.RepositoryID, opt => opt.MapFrom(src => src.RepositoryID));
+
                 
+
                 
                 
         }
