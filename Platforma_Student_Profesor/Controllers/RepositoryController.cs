@@ -161,73 +161,7 @@ namespace API.Controllers
             return Ok("Dodano ucznia do repozytorium");
         }
         
-        [Authorize(Roles = "admin,teacher")]
-        [HttpPost("AddAssigment")]
-        public IActionResult AddAssignment(AssignmentDTO assignment)
-        {
-            if (assignment == null)
-                return BadRequest("Zadanie nie może być puste.");
-
-            if (!ModelState.IsValid)
-                return BadRequest("Coś poszło nie tak.");
-
-            if (_repositoryService.AssignmentExists(assignment.Name))
-                return BadRequest("Zadanie już istnieje.");
-
-            var assignmentMap = _mapper.Map<Assignment>(assignment);
-
-            if (!_repositoryService.AddAssignment(assignmentMap))
-                return BadRequest("Coś poszło nie tak podczas tworzenia zadania.");
-
-            return Ok("Zadanie zostało poprawnie utworzone.");
-        }
         
-
-        [Authorize(Roles = "admin,teacher")]
-        [HttpPut("updateAssigment")]
-        public IActionResult UpdateAssignment(AssignmentDTO assignmentUpdate)
-        {
-            if (assignmentUpdate == null)
-                return BadRequest("Zadanie do zmiany nie może być puste");
-
-            if (!ModelState.IsValid)
-                return BadRequest("Coś poszło nie tak");
-
-            if (!_repositoryService.AssignmentExists(assignmentUpdate.AssignmentID))
-                return BadRequest("Nie istenieje takie zadanie");
-
-            //CreateBy must be same as before!!!!
-            var assignmentMap = _mapper.Map<Assignment>(assignmentUpdate);
-
-
-            if (!_repositoryService.UpdateAssignment(assignmentMap))
-                return BadRequest("Coś poszło nie tak podczas zmiany");
-
-            return Ok("Zaktualizowano zadanie");
-        }
-
-        [Authorize(Roles = "admin,teacher")]
-        [HttpDelete("deleteAssigment")]
-        public IActionResult DeleteAssignment(AssignmentDTO assignment)
-        {
-            if (assignment == null)
-                return BadRequest("Zadanie do usunięcia nie może być puste");
-
-            if (!ModelState.IsValid)
-                return BadRequest("Coś poszło nie tak");
-
-            if (!_repositoryService.AssignmentExists(assignment.AssignmentID))
-                return BadRequest("Nie istenieje takie zadanie");
-
-            //CreateBy must be same as before!!!!
-            var assignmentMap = _mapper.Map<Assignment>(assignment);
-
-
-            if (!_repositoryService.DeleteAssignment(assignmentMap))
-                return BadRequest("Coś poszło nie tak podczas usuwania");
-
-            return Ok("Usunięto zadanie");
-        }
 
         [Authorize(Roles = "admin,teacher,student")]
         [HttpGet("repositoryForUser")]
