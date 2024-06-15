@@ -3,6 +3,7 @@ using System;
 using DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DAL.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20240615122212_InitialCreate")]
+    partial class InitialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.4");
@@ -44,30 +47,6 @@ namespace DAL.Migrations
                     b.HasIndex("RepositoryID");
 
                     b.ToTable("Assignments");
-                });
-
-            modelBuilder.Entity("MODEL.Models.File", b =>
-                {
-                    b.Property<int>("FileID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("AssigmentID")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("FileName")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("UserID")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("FileID");
-
-                    b.HasIndex("AssigmentID");
-
-                    b.HasIndex("UserID");
-
-                    b.ToTable("Files");
                 });
 
             modelBuilder.Entity("MODEL.Models.Repository", b =>
@@ -156,11 +135,17 @@ namespace DAL.Migrations
                     b.Property<string>("Comment")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("Files")
+                        .HasColumnType("TEXT");
+
                     b.Property<double>("Mark")
                         .HasColumnType("REAL");
 
                     b.Property<DateTime>("SendDate")
                         .HasColumnType("DATETIME");
+
+                    b.Property<int>("UserAssigmnentID")
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("UserID", "AssigmnentID");
 
@@ -202,25 +187,6 @@ namespace DAL.Migrations
                         .IsRequired();
 
                     b.Navigation("Repository");
-                });
-
-            modelBuilder.Entity("MODEL.Models.File", b =>
-                {
-                    b.HasOne("MODEL.Models.Assignment", "Assignment")
-                        .WithMany("Files")
-                        .HasForeignKey("AssigmentID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("MODEL.Models.User", "User")
-                        .WithMany("Files")
-                        .HasForeignKey("UserID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Assignment");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("MODEL.Models.User", b =>
@@ -274,8 +240,6 @@ namespace DAL.Migrations
 
             modelBuilder.Entity("MODEL.Models.Assignment", b =>
                 {
-                    b.Navigation("Files");
-
                     b.Navigation("UserAssigmnents");
                 });
 
@@ -293,8 +257,6 @@ namespace DAL.Migrations
 
             modelBuilder.Entity("MODEL.Models.User", b =>
                 {
-                    b.Navigation("Files");
-
                     b.Navigation("UserAssigmnents");
 
                     b.Navigation("UserRepositories");

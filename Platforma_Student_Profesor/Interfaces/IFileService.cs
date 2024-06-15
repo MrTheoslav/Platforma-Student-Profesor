@@ -4,12 +4,12 @@ namespace API.Interfaces
 {
     public interface IFileService
     {
-        Task<(FileStream, string, string)> DownloadFile(UserAssigmnent userAssigmnent);
-        string GetFilePath(UserAssigmnent userAssigmnent);
+        Task<(FileStream, string)> DownloadFile(MODEL.Models.File infoAboutSender);
+        string GetFilePath(MODEL.Models.File infoAboutSender);
         Repository GetRepository(int assignmentID);
-        ICollection<UserAssigmnent> GetUserAssigmnents(int assignmentID);
-        ICollection<UserAssigmnent> GetUserAssigmnents(int assignmentID, int userId);
-        UserAssigmnent GetUserAssigmnent(int assignmentID, int userId, string file);
-        Task<bool> WriteFile(UserAssigmnent userAssigmnent, IFormFile file);
+        ICollection<MODEL.Models.File> GetInfoAboutSenders(int assignmentID);
+        ICollection<MODEL.Models.File> GetInfoAboutSenders(int assignmentID, int userId);
+        MODEL.Models.File GetInfoAboutSender(int assignmentID, int userId, string file);
+        Task<bool> WriteFile(MODEL.Models.File infoAboutSender, IFormFile file);
     }
 }

@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DAL.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20240614172452_ChangedUserAssigmnent")]
-    partial class ChangedUserAssigmnent
+    [Migration("20240615135849_AddedTable")]
+    partial class AddedTable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -47,6 +47,25 @@ namespace DAL.Migrations
                     b.HasIndex("RepositoryID");
 
                     b.ToTable("Assignments");
+                });
+
+            modelBuilder.Entity("MODEL.Models.File", b =>
+                {
+                    b.Property<int>("FileID")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("AssigmentID")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("FileName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("UserID")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("FileID");
+
+                    b.ToTable("File");
                 });
 
             modelBuilder.Entity("MODEL.Models.Repository", b =>
@@ -186,6 +205,25 @@ namespace DAL.Migrations
                     b.Navigation("Repository");
                 });
 
+            modelBuilder.Entity("MODEL.Models.File", b =>
+                {
+                    b.HasOne("MODEL.Models.Assignment", "Assignment")
+                        .WithMany("Files")
+                        .HasForeignKey("FileID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MODEL.Models.User", "User")
+                        .WithMany("Files")
+                        .HasForeignKey("FileID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Assignment");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("MODEL.Models.User", b =>
                 {
                     b.HasOne("MODEL.Models.Role", "Role")
@@ -237,6 +275,8 @@ namespace DAL.Migrations
 
             modelBuilder.Entity("MODEL.Models.Assignment", b =>
                 {
+                    b.Navigation("Files");
+
                     b.Navigation("UserAssigmnents");
                 });
 
@@ -254,6 +294,8 @@ namespace DAL.Migrations
 
             modelBuilder.Entity("MODEL.Models.User", b =>
                 {
+                    b.Navigation("Files");
+
                     b.Navigation("UserAssigmnents");
 
                     b.Navigation("UserRepositories");

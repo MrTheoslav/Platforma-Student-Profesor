@@ -31,63 +31,69 @@ namespace API.Controllers
         [Route("upload")]
         public async Task<IActionResult> UploadFile(TransferFile transferFile)
         {
-            var userAssigmnent = transferFile.UserAssigmnentDTO;
-            var file = transferFile.file;
+            var infoAboutSender = transferFile.file;
+            var files = transferFile.files;
+            int count = 0;
+            foreach (var file in files)
+            {
 
-            if (userAssigmnent == null)
-                return BadRequest("Brak podanych informacji na temat zadania/ucznia przesyłającego zadanie");
+                if (infoAboutSender == null)
+                    return BadRequest("Brak podanych informacji na temat zadania/ucznia przesyłającego zadanie");
 
-            if (file == null)
-                return BadRequest("Brak wysłanego pliku");
+                if (file == null)
+                    return BadRequest("Brak wysłanego pliku");
 
-            if (!ModelState.IsValid)
-                return BadRequest("Coś poszło nie tak podczas przesyłania pliku.");
+                if (!ModelState.IsValid)
+                    return BadRequest("Coś poszło nie tak podczas przesyłania pliku.");
 
-            //Check if student sent assigmnent
+                //Check if student sent assigmnent
 
-            var userAssigmnentMap = _mapper.Map<UserAssigmnent>(userAssigmnent);
+                var fileMap = _mapper.Map<MODEL.Models.File>(infoAboutSender);
 
-            if (!await _fileService.WriteFile(userAssigmnentMap, file))
-                return BadRequest("Plik nie został poprawnie przesłany");
+                if (await _fileService.WriteFile(fileMap, file))
+                    count++;
 
-            return Ok($"Przesłano plik {file.FileName}.");
+            }
+            if (count == 0)
+                return BadRequest("Żaden plik nie został przesłany poprawnie");
+            return Ok($"Liczba przesłanych plików: {count}");
         }
 
         [HttpGet]
         [Route("FilesNames/{assigmnentID}")]
         public IActionResult GetAllFilesNamesForAssigmnent(int assigmnentID)
         {
-            var userAssigmnentDTOs = _mapper.Map<List<UserAssigmnentDTO>>(_fileService.GetUserAssigmnents(assigmnentID));
+            var fileDTOs = _mapper.Map<List<FileDTO>>(_fileService.GetInfoAboutSenders(assigmnentID));
 
             if (!ModelState.IsValid)
             {
                 return BadRequest("Coś poszło nie tak");
             }
 
-            return Ok(userAssigmnentDTOs);
-        }  
-        
+            return Ok(fileDTOs);
+        }
+
         [HttpGet]
         [Route("FilesNames/{assigmnentID}/{userID}")]
         public IActionResult GetAllFilesNamesForAssigmnentForUser(int assigmnentID, int userID)
         {
-            var userAssigmnentDTOs = _mapper.Map<List<UserAssigmnentDTO>>(_fileService.GetUserAssigmnents(assigmnentID, userID));
+            var fileDTOs = _mapper.Map<List<FileDTO>>(_fileService.GetInfoAboutSenders(assigmnentID, userID));
 
             if (!ModelState.IsValid)
             {
                 return BadRequest("Coś poszło nie tak");
             }
 
-            return Ok(userAssigmnentDTOs);
+            return Ok(fileDTOs);
         }
 
         [HttpGet]
-        [Route("DownloadFile/{assigmnentID}/{userID}/{file}")]
-        public async Task<IActionResult> DownloadFile(int assigmnentID, int userID, string file)
+        [Route("DownloadFile/{assigmnentID}/{userID}/{fileName}")]
+        public async Task<IActionResult> DownloadFile(int assigmnentID, int userID, string fileName)
         {
-            var userAssigmnent = _fileService.GetUserAssigmnent(assigmnentID, userID, file);
+            var infoAboutSender = _fileService.GetInfoAboutSender(assigmnentID, userID, fileName);
 
-            (FileStream fileStream, string contentType, string fileName) = await _fileService.DownloadFile(userAssigmnent);
+            (FileStream fileStream, string contentType) = await _fileService.DownloadFile(infoAboutSender);
 
             return File(fileStream, contentType, fileName);
         }

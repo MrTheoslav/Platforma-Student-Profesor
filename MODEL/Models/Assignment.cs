@@ -18,5 +18,7 @@ namespace MODEL.Models
         public Repository Repository { get; set; }
         public ICollection<UserAssigmnent> UserAssigmnents { get; set; }
         public int RepositoryID { get; set; }
+
+        public ICollection<File> Files { get; set; }
     }
 }

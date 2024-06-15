@@ -38,14 +38,12 @@ namespace API.Helper
                 .ForMember(dst => dst.UserID, opt => opt.MapFrom(src => src.UserID))
                 .ForMember(dst => dst.Mark, opt => opt.MapFrom(src => src.Mark))
                 .ForMember(dst => dst.Comment, opt => opt.MapFrom(src => src.Comment))
-                .ForMember(dst => dst.Files, opt => opt.MapFrom(src => src.Files))
-                .ForMember(dst => dst.SendDate, opt => opt.MapFrom(src => src.SendDate)); 
+                .ForMember(dst => dst.SendDate, opt => opt.MapFrom(src => src.SendDate));
             CreateMap<UserAssigmnent, UserAssigmnentDTO>()
                 .ForMember(dst => dst.AssigmnentID, opt => opt.MapFrom(src => src.AssigmnentID))
                 .ForMember(dst => dst.UserID, opt => opt.MapFrom(src => src.UserID))
                 .ForMember(dst => dst.Mark, opt => opt.MapFrom(src => src.Mark))
                 .ForMember(dst => dst.Comment, opt => opt.MapFrom(src => src.Comment))
-                .ForMember(dst => dst.Files, opt => opt.MapFrom(src => src.Files))
                 .ForMember(dst => dst.SendDate, opt => opt.MapFrom(src => src.SendDate));
 
             CreateMap<AssignmentDTO, Assignment>()
@@ -63,10 +61,17 @@ namespace API.Helper
                 .ForMember(dst => dst.EndDate, opt => opt.MapFrom(src => src.EndDate))
                 .ForMember(dst => dst.RepositoryID, opt => opt.MapFrom(src => src.RepositoryID));
 
-                
+            CreateMap<MODEL.Models.File, FileDTO>()
+                .ForMember(dst => dst.FileID, opt => opt.MapFrom(src => src.FileID))
+                .ForMember(dst => dst.UserID, opt => opt.MapFrom(src => src.UserID))
+                .ForMember(dst => dst.AssigmentID, opt => opt.MapFrom(src => src.AssigmentID))
+                .ForMember(dst => dst.FileName, opt => opt.MapFrom(src => src.FileName));
+            CreateMap<FileDTO, MODEL.Models.File>()
+                .ForMember(dst => dst.FileID, opt => opt.MapFrom(src => src.FileID))
+                .ForMember(dst => dst.UserID, opt => opt.MapFrom(src => src.UserID))
+                .ForMember(dst => dst.AssigmentID, opt => opt.MapFrom(src => src.AssigmentID))
+                .ForMember(dst => dst.FileName, opt => opt.MapFrom(src => src.FileName));
 
-                
-                
         }
     }
 }

@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DAL.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20240513235612_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20240615140615_FixedForeignKey")]
+    partial class FixedForeignKey
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -47,6 +47,30 @@ namespace DAL.Migrations
                     b.HasIndex("RepositoryID");
 
                     b.ToTable("Assignments");
+                });
+
+            modelBuilder.Entity("MODEL.Models.File", b =>
+                {
+                    b.Property<int>("FileID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("AssigmentID")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("FileName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("UserID")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("FileID");
+
+                    b.HasIndex("AssigmentID");
+
+                    b.HasIndex("UserID");
+
+                    b.ToTable("Files");
                 });
 
             modelBuilder.Entity("MODEL.Models.Repository", b =>
@@ -133,11 +157,9 @@ namespace DAL.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Comment")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Files")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<double>("Mark")
@@ -186,6 +208,25 @@ namespace DAL.Migrations
                         .IsRequired();
 
                     b.Navigation("Repository");
+                });
+
+            modelBuilder.Entity("MODEL.Models.File", b =>
+                {
+                    b.HasOne("MODEL.Models.Assignment", "Assignment")
+                        .WithMany("Files")
+                        .HasForeignKey("AssigmentID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MODEL.Models.User", "User")
+                        .WithMany("Files")
+                        .HasForeignKey("UserID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Assignment");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("MODEL.Models.User", b =>
@@ -239,6 +280,8 @@ namespace DAL.Migrations
 
             modelBuilder.Entity("MODEL.Models.Assignment", b =>
                 {
+                    b.Navigation("Files");
+
                     b.Navigation("UserAssigmnents");
                 });
 
@@ -256,6 +299,8 @@ namespace DAL.Migrations
 
             modelBuilder.Entity("MODEL.Models.User", b =>
                 {
+                    b.Navigation("Files");
+
                     b.Navigation("UserAssigmnents");
 
                     b.Navigation("UserRepositories");

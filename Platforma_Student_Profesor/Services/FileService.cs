@@ -19,11 +19,11 @@ namespace API.Services
             _appSettings = appSettings.CurrentValue;
             _context = context;
         }
-        public async Task<bool> WriteFile(UserAssigmnent userAssigmnent, IFormFile file)
+        public async Task<bool> WriteFile(MODEL.Models.File infoAboutSender, IFormFile file)
         {
             try
             {
-                var fullFilePath = Path.Combine(filePath ,GetFilePath(userAssigmnent));
+                var fullFilePath = Path.Combine(filePath ,GetFilePath(infoAboutSender));
 
                 if (!Directory.Exists(fullFilePath))
                 {
@@ -37,9 +37,9 @@ namespace API.Services
                     await file.CopyToAsync(stream);
                 }
 
-                userAssigmnent.Files = file.FileName;
+                infoAboutSender.FileName= file.FileName;
 
-                _context.Add(userAssigmnent);
+                _context.Add(infoAboutSender);
 
                 return _context.SaveChanges() != 0;
             }
@@ -49,26 +49,26 @@ namespace API.Services
             }
         }
 
-        public string GetFilePath(UserAssigmnent userAssigmnent)
+        public string GetFilePath(MODEL.Models.File infoAboutSender)
         {
-            var repID = GetRepository(userAssigmnent.AssigmnentID).RepositoryID;
-            var assID = userAssigmnent.AssigmnentID;
-            var usID = userAssigmnent.UserID;
+            var repID = GetRepository(infoAboutSender.AssigmentID).RepositoryID;
+            var assID = infoAboutSender.AssigmentID;
+            var usID = infoAboutSender.UserID;
             return Path.Combine(repID.ToString(), assID.ToString(), usID.ToString());
         }
 
-        public async Task<(FileStream, string, string)> DownloadFile(UserAssigmnent userAssigmnent)
+        public async Task<(FileStream, string)> DownloadFile(MODEL.Models.File infoAboutSender)
         {
 
-            var fullFilePath = Path.Combine(filePath, GetFilePath(userAssigmnent) ,userAssigmnent.Files);
+            var fullFilePath = Path.Combine(filePath, GetFilePath(infoAboutSender) ,infoAboutSender.FileName);
 
             var provider = new FileExtensionContentTypeProvider();
             if (!provider.TryGetContentType(fullFilePath, out var contentType))
                 contentType = "application/octet-stream";
 
-            var file = File.OpenRead(fullFilePath);
+            var file = System.IO.File.OpenRead(fullFilePath);
 
-            return (file, contentType, userAssigmnent.Files);
+            return (file, contentType);
         }
 
         public Repository GetRepository(int assignmentID)
@@ -77,19 +77,20 @@ namespace API.Services
             return _context.Repository.Where(r => r.RepositoryID == repID).FirstOrDefault();
         }
 
-        public ICollection<UserAssigmnent> GetUserAssigmnents(int assignmentID)
+        public ICollection<MODEL.Models.File> GetInfoAboutSenders(int assignmentID)
         {
-            return _context.UserAssigmnents.Where(ua => ua.AssigmnentID == assignmentID).ToList();
+            return _context.Files.Where(f => f.AssigmentID == assignmentID).ToList();
         }
 
-        public ICollection<UserAssigmnent> GetUserAssigmnents(int assignmentID, int userId)
+        public ICollection<MODEL.Models.File> GetInfoAboutSenders(int assignmentID, int userId)
         {
-            return _context.UserAssigmnents.Where(ua => ua.AssigmnentID == assignmentID && ua.UserID == userId).ToList();
+            return _context.Files.Where(f => f.AssigmentID == assignmentID && f.UserID == userId).ToList();
         }
 
-        public UserAssigmnent GetUserAssigmnent(int assignmentID, int userId, string file)
+        public MODEL.Models.File GetInfoAboutSender(int assignmentID, int userId, string fileName)
         {
-            return _context.UserAssigmnents.Where(ua => ua.AssigmnentID == assignmentID && ua.UserID == userId && ua.Files == file).FirstOrDefault();
+            return _context.Files.Where(f => f.AssigmentID == assignmentID && f.UserID == userId && f.FileName == fileName).FirstOrDefault();
         }
+
     }
 }
