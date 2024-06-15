@@ -23,7 +23,7 @@ namespace API.Services
         {
             try
             {
-                var fullFilePath = GetFilePath(userAssigmnent);
+                var fullFilePath = Path.Combine(filePath ,GetFilePath(userAssigmnent));
 
                 if (!Directory.Exists(fullFilePath))
                 {
@@ -37,11 +37,9 @@ namespace API.Services
                     await file.CopyToAsync(stream);
                 }
 
-                fullFilePath = Path.Combine(fullFilePath, file.FileName);
+                userAssigmnent.Files = file.FileName;
 
-                userAssigmnent.Files = fullFilePath;
-
-                _context.Update(userAssigmnent);
+                _context.Add(userAssigmnent);
 
                 return _context.SaveChanges() != 0;
             }
@@ -56,13 +54,13 @@ namespace API.Services
             var repID = GetRepository(userAssigmnent.AssigmnentID).RepositoryID;
             var assID = userAssigmnent.AssigmnentID;
             var usID = userAssigmnent.UserID;
-            return Path.Combine(filePath, repID.ToString(), assID.ToString(), usID.ToString());
+            return Path.Combine(repID.ToString(), assID.ToString(), usID.ToString());
         }
 
         public async Task<(FileStream, string, string)> DownloadFile(UserAssigmnent userAssigmnent)
         {
 
-            var fullFilePath = GetFilePath(userAssigmnent);
+            var fullFilePath = Path.Combine(filePath, GetFilePath(userAssigmnent) ,userAssigmnent.Files);
 
             var provider = new FileExtensionContentTypeProvider();
             if (!provider.TryGetContentType(fullFilePath, out var contentType))
@@ -70,7 +68,7 @@ namespace API.Services
 
             var file = File.OpenRead(fullFilePath);
 
-            return (file, contentType, Path.GetFileName(filePath));
+            return (file, contentType, userAssigmnent.Files);
         }
 
         public Repository GetRepository(int assignmentID)

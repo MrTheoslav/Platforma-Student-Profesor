@@ -87,9 +87,9 @@ namespace API.Controllers
         {
             var userAssigmnent = _fileService.GetUserAssigmnent(assigmnentID, userID, file);
 
-            (FileStream fileStream, string contentType, string path) = await _fileService.DownloadFile(userAssigmnent);
+            (FileStream fileStream, string contentType, string fileName) = await _fileService.DownloadFile(userAssigmnent);
 
-            return File(fileStream, contentType, path);
+            return File(fileStream, contentType, fileName);
         }
     }
 }
