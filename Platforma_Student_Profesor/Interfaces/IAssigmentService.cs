@@ -12,5 +12,6 @@ namespace API.Interfaces
         bool UpdateAssignment(Assignment assignment);
         bool DeleteAssignment(Assignment assignment);
         ICollection<Assignment> GetAssignmentsForRepository(int repositoryID);
+        Assignment GetAssignmentByID(int id);
     }
 }

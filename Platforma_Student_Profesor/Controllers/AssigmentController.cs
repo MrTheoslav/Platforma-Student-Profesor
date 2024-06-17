@@ -106,6 +106,22 @@ namespace API.Controllers
             return Ok(assignmentDTOs);
         }
 
+        [Authorize(Roles = "admin,teacher,student")]
+        [HttpGet("assigmnentByID/{assigmnentID}")]
+        [ProducesResponseType(200, Type = typeof(Assignment))]
+        [ProducesResponseType(400)]
+        public IActionResult GetAssignmentByID(int assigmnentID)
+        {
+            if (!_assigmentService.AssignmentExists(assigmnentID))
+                return NotFound("Nie znaleziono zadania");
 
+            var assignmentDTO = _mapper.Map<AssignmentDTO>(_assigmentService.GetAssignmentByID(assigmnentID));
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Coś poszło nie tak");
+            }
+
+            return Ok(assignmentDTO);
+        }
     }
 }
