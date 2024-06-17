@@ -93,9 +93,10 @@ namespace DAL.Migrations
                 {
                     AssigmnentID = table.Column<int>(type: "INTEGER", nullable: false),
                     UserID = table.Column<int>(type: "INTEGER", nullable: false),
+                    UserAssigmnentID = table.Column<int>(type: "INTEGER", nullable: false),
                     Mark = table.Column<double>(type: "REAL", nullable: false),
-                    Comment = table.Column<string>(type: "TEXT", nullable: false),
-                    Files = table.Column<string>(type: "TEXT", nullable: false),
+                    Comment = table.Column<string>(type: "TEXT", nullable: true),
+                    Files = table.Column<string>(type: "TEXT", nullable: true),
                     SendDate = table.Column<DateTime>(type: "DATETIME", nullable: false)
                 },
                 constraints: table =>

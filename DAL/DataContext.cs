@@ -1,5 +1,4 @@
-﻿
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using MODEL.Models;
 
 namespace DAL
@@ -16,6 +15,7 @@ namespace DAL
         public DbSet<Repository> Repository { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<MODEL.Models.File> Files { get; set; }
         public DbSet<UserRepository> UsersRepository { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -50,6 +50,18 @@ namespace DAL
                 .HasOne(u => u.User)
                 .WithMany(ur => ur.UserRepositories)
                 .HasForeignKey(u => u.UserID);
+
+            modelBuilder.Entity<MODEL.Models.File>()
+                .HasKey(f => new { f.FileID });
+            modelBuilder.Entity<MODEL.Models.File>()
+                .HasOne(u => u.User)
+                .WithMany(f => f.Files)
+                .HasForeignKey(f => f.UserID);
+            modelBuilder.Entity<MODEL.Models.File>()
+                .HasOne(u => u.Assignment)
+                .WithMany(f => f.Files)
+                .HasForeignKey(f => f.AssigmentID);
+
         }
     }
 }

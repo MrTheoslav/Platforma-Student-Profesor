@@ -3,6 +3,7 @@ using System;
 using DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DAL.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20240615140312_FixedFilesTable")]
+    partial class FixedFilesTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.4");
@@ -49,7 +52,6 @@ namespace DAL.Migrations
             modelBuilder.Entity("MODEL.Models.File", b =>
                 {
                     b.Property<int>("FileID")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("AssigmentID")
@@ -62,10 +64,6 @@ namespace DAL.Migrations
                         .HasColumnType("INTEGER");
 
                     b.HasKey("FileID");
-
-                    b.HasIndex("AssigmentID");
-
-                    b.HasIndex("UserID");
 
                     b.ToTable("Files");
                 });
@@ -156,6 +154,9 @@ namespace DAL.Migrations
                     b.Property<string>("Comment")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("Files")
+                        .HasColumnType("TEXT");
+
                     b.Property<double>("Mark")
                         .HasColumnType("REAL");
 
@@ -208,13 +209,13 @@ namespace DAL.Migrations
                 {
                     b.HasOne("MODEL.Models.Assignment", "Assignment")
                         .WithMany("Files")
-                        .HasForeignKey("AssigmentID")
+                        .HasForeignKey("FileID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("MODEL.Models.User", "User")
                         .WithMany("Files")
-                        .HasForeignKey("UserID")
+                        .HasForeignKey("FileID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

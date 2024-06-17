@@ -39,12 +39,12 @@ namespace API.Services
 
         public bool AddAssignment(Assignment assignment)
         {
-            var authorizationResult = _authorizationService.AuthorizeAsync(_userContextService.User, assignment, new ResourceOperationRequirement(ResourceOperation.Update)).Result;
+            //var authorizationResult = _authorizationService.AuthorizeAsync(_userContextService.User, assignment, new ResourceOperationRequirement(ResourceOperation.Update)).Result;
 
-            if (!authorizationResult.Succeeded)
-            {
-                return false;
-            }
+            //if (!authorizationResult.Succeeded)
+            //{
+            //    return false;
+            //}
 
             _context.Add(assignment);
 
@@ -104,9 +104,9 @@ namespace API.Services
             return Save();
         }
 
-
-
-
-
+        public string GetRepositoryName(int assignmentID)
+        {
+            return _context.Repository.Where(r => r.RepositoryID == _context.Assignments.Where(a => a.AssignmentID == assignmentID).FirstOrDefault().RepositoryID).FirstOrDefault().Name;
+        }
     }
 }

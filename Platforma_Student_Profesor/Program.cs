@@ -3,6 +3,7 @@ using API;
 using API.Helper;
 using API.Interfaces;
 using API.Services;
+using API.Settings;
 using DAL;
 using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
@@ -26,6 +27,8 @@ ConfigurationManager configuration = builder.Configuration;
 var authenticactionsettings = new AuthenticationSettings();
 
 configuration.GetSection("Authentication").Bind(authenticactionsettings);
+
+builder.Services.Configure<AppSettings>(configuration.GetSection(nameof(AppSettings)));
 
 builder.Services.AddSingleton(authenticactionsettings);
 
