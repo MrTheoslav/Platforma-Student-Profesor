@@ -90,6 +90,21 @@ namespace API.Controllers
             return Ok("Usunięto zadanie");
         }
 
+        [Authorize(Roles = "admin,teacher,student")]
+        [HttpGet("assignmentForRepository/{repositoryID}")]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<Assignment>))]
+        [ProducesResponseType(400)]
+
+        public IActionResult GetAssignmentForRepository(int repositoryID)
+        {
+            var assignmentDTOs = _mapper.Map<List<AssignmentDTO>>(_assigmentService.GetAssignmentsForRepository(repositoryID));
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Coś poszło nie tak");
+            }
+            return Ok(assignmentDTOs);
+        }
 
 
     }

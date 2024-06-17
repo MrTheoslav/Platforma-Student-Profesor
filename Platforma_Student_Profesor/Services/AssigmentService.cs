@@ -108,5 +108,11 @@ namespace API.Services
         {
             return _context.Repository.Where(r => r.RepositoryID == _context.Assignments.Where(a => a.AssignmentID == assignmentID).FirstOrDefault().RepositoryID).FirstOrDefault().Name;
         }
+
+        public ICollection<Assignment> GetAssignmentsForRepository(int repositoryID)
+        {
+            return _context.Assignments.Where(x=>x.RepositoryID == repositoryID).ToList();
+
+        }
     }
 }

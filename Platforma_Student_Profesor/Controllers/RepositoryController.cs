@@ -29,7 +29,7 @@ namespace API.Controllers
         [ProducesResponseType(400)]
 
 
-        public IActionResult GetRepository()
+        public IActionResult GetAllRepository()
         {
             var repositoryDTOs = _mapper.Map<List<RepositoryDTO>>(_repositoryService.GetAllRepository());
 
