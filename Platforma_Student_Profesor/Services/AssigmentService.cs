@@ -114,5 +114,10 @@ namespace API.Services
             return _context.Assignments.Where(x=>x.RepositoryID == repositoryID).ToList();
 
         }
+
+        public Assignment GetAssignmentByID(int id)
+        {
+            return _context.Assignments.Where(a => a.AssignmentID == id).First();
+        }
     }
 }
