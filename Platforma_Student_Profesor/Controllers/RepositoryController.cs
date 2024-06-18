@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MODEL.DTO;
 using MODEL.Models;
+using System.Diagnostics.Eventing.Reader;
+using System.Reflection.Metadata.Ecma335;
 using System.Security.Claims;
 
 namespace API.Controllers
@@ -17,10 +19,12 @@ namespace API.Controllers
     {
         private readonly IRepositoryService _repositoryService;
         private readonly IMapper _mapper;
-        public RepositoryController(IRepositoryService repositoryService, IMapper mapper)
+        private readonly IUserContextService _userContextService;
+        public RepositoryController(IRepositoryService repositoryService, IMapper mapper, IUserContextService userContextService)
         {
             _repositoryService = repositoryService;
             _mapper = mapper;
+            _userContextService = userContextService;
         }
 
         [Authorize(Roles = "admin,teacher,student")]
@@ -149,11 +153,21 @@ namespace API.Controllers
 
             if (!ModelState.IsValid)
                 return BadRequest("Coś poszło nie tak.");
+            userRepository.UserID = (int)_userContextService.GetUserId;
+            userRepository.EnterDate = DateTime.Now;
 
             if (_repositoryService.UserExistsInRepository(userRepository.UserID, userRepository.RepositoryID))
                 return BadRequest("Użytkownik już istnieje w tym repozytorium.");
 
-            var userRepositoryMap = _mapper.Map<UserRepository>(userRepository);
+            var userRepositoryMap = new UserRepository()
+            {
+                UserID = userRepository.UserID,
+                RepositoryID = userRepository.RepositoryID,
+                IsMember = userRepository.IsMember,
+                EnterDate = DateTime.Now,
+                Privilage = 2
+             
+            };
 
             if (!_repositoryService.AddStudentToRepository(userRepositoryMap))
                 return BadRequest("Coś poszło nie tak podczas dodawania ucznia do repozytorium.");
@@ -180,6 +194,56 @@ namespace API.Controllers
 
 
         }
+
+        [Authorize(Roles = "admin,teacher,student")]
+        [HttpGet("UserExistInRepo/{repoID}")]
+        [ProducesResponseType(200, Type = typeof(UserRepositoryDTO))]
+        [ProducesResponseType(400)]
+        public IActionResult UserExistInRepository(int repoID)
+        {
+            var userRepo = _repositoryService.UserConfirmAndExist((int)_userContextService.GetUserId, repoID);
+            var userRepositoryDTO = new UserRepositoryDTO();
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Coś poszło nie tak");
+            }
+
+
+            if (userRepo.Privilage == 0)
+            {
+                userRepositoryDTO = new UserRepositoryDTO()
+                {
+                    UserID = 0,
+                    EnterDate = DateTime.Now,
+                    HasPrivilage = false,
+                    IsMember = false,
+                    RepositoryID = 0
+                };
+                return Ok(userRepositoryDTO);
+            }
+            else
+            {
+                  userRepositoryDTO = new UserRepositoryDTO()
+                {
+                    UserID = userRepo.UserID,
+                    EnterDate = userRepo.EnterDate,
+                    HasPrivilage = false,
+                    IsMember = userRepo.IsMember,
+                    RepositoryID = userRepo.RepositoryID
+                };
+
+                    return Ok(userRepositoryDTO);
+            }
+
+
+
+            return BadRequest("Coś poszło nie tak");
+
+
+        }
+
+
         
 
     }

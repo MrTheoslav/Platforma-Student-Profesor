@@ -19,6 +19,7 @@ namespace API.Interfaces
         bool AddStudentToRepository(UserRepository userRepository);
       
         ICollection<Repository> GetRepositoryForUser();
+        UserRepository UserConfirmAndExist(int userID, int repositoryID);
 
     }
 }

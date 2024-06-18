@@ -159,6 +159,28 @@ namespace API.Services
             return userRepositoriesList;
         }
 
-     
+
+        public UserRepository UserConfirmAndExist(int userID, int repositoryID)
+        {
+            var userRepository = _context.UsersRepository.Where(ur => ur.UserID == userID && ur.RepositoryID == repositoryID).FirstOrDefault();
+
+            if (userRepository != null)
+            {
+                return userRepository;
+
+            }
+
+            UserRepository userRepo = new UserRepository()
+            {
+                IsMember = false,
+                UserID = 0,
+                RepositoryID = 0,
+                Privilage = 0,
+                EnterDate = DateTime.Now
+            };
+            return userRepo;
+
+        }
+
     }
 }
