@@ -21,12 +21,14 @@ namespace API.Helper
             CreateMap<RepositoryDTO, Repository>();
 
             CreateMap<UserDTO, User>()
+               .ForMember(dst => dst.UserID, opt => opt.MapFrom(src => src.UserID))
                .ForMember(dst => dst.RoleID, opt => opt.MapFrom(src => src.RoleID))
                .ForMember(dst => dst.UserFirstName, opt => opt.MapFrom(src => src.UserFirstName))
                .ForMember(dst => dst.UserLastName, opt => opt.MapFrom(src => src.UserLastName))
                .ForMember(dst => dst.Email, opt => opt.MapFrom(src => src.Email))
                .ForMember(dst => dst.EnterDate, opt => opt.MapFrom(src => src.EnterDate));
             CreateMap<User, UserDTO>()
+              .ForMember(dst => dst.UserID, opt => opt.MapFrom(src => src.UserID))
               .ForMember(dst => dst.RoleID, opt => opt.MapFrom(src => src.RoleID))
               .ForMember(dst => dst.UserFirstName, opt => opt.MapFrom(src => src.UserFirstName))
               .ForMember(dst => dst.UserLastName, opt => opt.MapFrom(src => src.UserLastName))

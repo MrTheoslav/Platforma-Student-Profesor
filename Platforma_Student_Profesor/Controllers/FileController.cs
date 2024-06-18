@@ -11,7 +11,7 @@ using MODEL.Models;
 namespace API.Controllers
 {
     [AllowAnonymous]
-    //[Authorize]
+    [Authorize]
     [ApiController]
     [Route("API/[controller]")]
     public class FileController : ControllerBase
@@ -26,19 +26,23 @@ namespace API.Controllers
             _webHostEnvironment = webHostEnvironment;
             _mapper = mapper;
         }
-        //[Authorize(Roles = "admin,teacher,student")]
+        [Authorize(Roles = "admin,teacher,student")]
         [HttpPost]
         [Route("upload")]
         public async Task<IActionResult> UploadFile(TransferFile transferFile)
         {
-            var infoAboutSender = transferFile.file;
+            FileDTO infoAboutSender = new FileDTO
+            {
+                AssigmentID = transferFile.AssigmentID,
+                UserID = transferFile.UserID,
+            };
             var files = transferFile.files;
             int count = 0;
             foreach (var file in files)
             {
 
-                if (infoAboutSender == null)
-                    return BadRequest("Brak podanych informacji na temat zadania/ucznia przesyłającego zadanie");
+                //if (infoAboutSender == null)
+                //    return BadRequest("Brak podanych informacji na temat zadania/ucznia przesyłającego zadanie");
 
                 if (file == null)
                     return BadRequest("Brak wysłanego pliku");

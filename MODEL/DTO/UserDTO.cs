@@ -5,8 +5,8 @@ namespace MODEL.DTO
 {
     public class UserDTO
     {
-      
 
+        public int UserID { get; set; }
         [Required(ErrorMessage = "Wpisz imię.")]
         public string UserFirstName { get; set; }
         [Required(ErrorMessage = "Wpisz nazwiko.")]
