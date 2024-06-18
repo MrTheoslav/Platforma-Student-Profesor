@@ -46,7 +46,7 @@ namespace API.Controllers
         public IActionResult GetRoleById(int roleId)
         {
 
-            if (_roleService.RoleExist(roleId))
+            if (!_roleService.RoleExist(roleId))
                 return NotFound();
 
             var roleDTO = _mapper.Map<RoleDTO>(_roleService.GetRoleByID(roleId));
