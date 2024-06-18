@@ -182,5 +182,26 @@ namespace API.Services
 
         }
 
+        public ICollection<UserRepository> GetStudentsToConfirm(int repositoryID)
+        {
+            return _context.UsersRepository.Where(ur => ur.IsMember==false && ur.RepositoryID == repositoryID).ToList();
+        }
+
+
+        public bool ConfirmUser(int userID, int repositoryID)
+        {
+            UserRepository user = _context.UsersRepository.Where(ur => ur.UserID == userID && ur.RepositoryID == repositoryID).FirstOrDefault();
+
+            if(user != null)
+            {
+                user.IsMember = true;
+                Save();
+                return true;
+            }
+            else { return false; }
+
+
+        }
+
     }
 }

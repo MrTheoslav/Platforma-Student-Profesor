@@ -1,5 +1,6 @@
 ﻿
 using API.Interfaces;
+using API.Services;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -144,7 +145,7 @@ namespace API.Controllers
         }
 
         
-        [Authorize(Roles = "admin,teacher")]
+        [Authorize(Roles = "admin,teacher, student")]
         [HttpPost("addStudentToRepository")]
         public IActionResult AddStudentToRepository([FromBody] UserRepositoryDTO userRepository)
         {
@@ -243,8 +244,54 @@ namespace API.Controllers
 
         }
 
+        [Authorize(Roles = "admin,teacher")]
+        [HttpGet("accountToConfirm/{repositoryID}")]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<UserRepositoryDTO>))]
+        [ProducesResponseType(400)]
+        public IActionResult GetAccountsToConfirm(int repositoryID)
+        {
+            var userRepositories = _repositoryService.GetStudentsToConfirm(repositoryID);
 
-        
+            var usersToConfirmDto = userRepositories.Select(ur => new UserRepositoryDTO
+            {
+                EnterDate = ur.EnterDate,
+                HasPrivilage = false,
+                IsMember = ur.IsMember,
+                UserID = ur.UserID,
+                RepositoryID = ur.RepositoryID
+            }).ToList();
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Coś poszło nie tak");
+            }
+            return Ok(usersToConfirmDto);
+        }
+
+
+        [Authorize(Roles = "admin,teacher")]
+        [HttpPost("confirmStudent/{userID}/{repositoryID}")]
+        public IActionResult ConfirmUser(int userID, int repositoryID)
+        {
+            bool decision = _repositoryService.ConfirmUser(userID, repositoryID);
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Coś poszło nie tak");
+            }
+
+            if (decision)
+            {
+                return Ok("Użytkownik zatwierdzony");
+
+            }
+            else
+            {
+                return BadRequest("Nie udało sie zatwierdzić użytkownika");
+            }
+
+        }
+
 
     }
 }

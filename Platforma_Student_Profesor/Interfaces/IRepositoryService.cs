@@ -20,6 +20,8 @@ namespace API.Interfaces
       
         ICollection<Repository> GetRepositoryForUser();
         UserRepository UserConfirmAndExist(int userID, int repositoryID);
+        bool ConfirmUser(int repositoryID, int userID);
+        ICollection<UserRepository> GetStudentsToConfirm(int repositoryID);
 
     }
 }
