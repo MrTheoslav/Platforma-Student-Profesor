@@ -21,11 +21,13 @@ namespace API.Controllers
         private readonly IRepositoryService _repositoryService;
         private readonly IMapper _mapper;
         private readonly IUserContextService _userContextService;
-        public RepositoryController(IRepositoryService repositoryService, IMapper mapper, IUserContextService userContextService)
+        private readonly IAccountService _accountService;
+        public RepositoryController(IRepositoryService repositoryService, IMapper mapper, IUserContextService userContextService, IAccountService accountService)
         {
             _repositoryService = repositoryService;
             _mapper = mapper;
             _userContextService = userContextService;
+            _accountService = accountService;
         }
 
         [Authorize(Roles = "admin,teacher,student")]
@@ -245,26 +247,24 @@ namespace API.Controllers
 
         [Authorize(Roles = "admin,teacher")]
         [HttpGet("accountToConfirm/{repositoryID}")]
-        [ProducesResponseType(200, Type = typeof(IEnumerable<UserRepositoryDTO>))]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<UserDTO>))]
         [ProducesResponseType(400)]
         public IActionResult GetAccountsToConfirm(int repositoryID)
         {
             var userRepositories = _repositoryService.GetStudentsToConfirm(repositoryID);
+           ICollection<UserDTO> userDTOs = new List<UserDTO>();
 
-            var usersToConfirmDto = userRepositories.Select(ur => new UserRepositoryDTO
+            foreach (var userRepositoryDTO in userRepositories)
             {
-                EnterDate = ur.EnterDate,
-                HasPrivilage = false,
-                IsMember = ur.IsMember,
-                UserID = ur.UserID,
-                RepositoryID = ur.RepositoryID
-            }).ToList();
-
+                var userDto = _mapper.Map<UserDTO>(_accountService.GetUserById(userRepositoryDTO.UserID));
+                userDTOs.Add(userDto);
+            }
+           
             if (!ModelState.IsValid)
             {
                 return BadRequest("Coś poszło nie tak");
             }
-            return Ok(usersToConfirmDto);
+            return Ok(userDTOs);
         }
 
 
@@ -298,21 +298,20 @@ namespace API.Controllers
         public IActionResult GetAcceptedStudentsForRepository(int repositoryID)
         {
             var userRepositories = _repositoryService.GetAcceptedStudents(repositoryID);
+            ICollection<UserDTO> userDTOs = new List<UserDTO>();
 
-            var usersToConfirmDto = userRepositories.Select(ur => new UserRepositoryDTO
+            foreach (var userRepositoryDTO in userRepositories)
             {
-                EnterDate = ur.EnterDate,
-                HasPrivilage = false,
-                IsMember = ur.IsMember,
-                UserID = ur.UserID,
-                RepositoryID = ur.RepositoryID
-            }).ToList();
+                var userDto = _mapper.Map<UserDTO>(_accountService.GetUserById(userRepositoryDTO.UserID));
+                userDTOs.Add(userDto);
+            }
 
             if (!ModelState.IsValid)
             {
                 return BadRequest("Coś poszło nie tak");
             }
-            return Ok(usersToConfirmDto);
+            return Ok(userDTOs);
+            
         }
 
     }
