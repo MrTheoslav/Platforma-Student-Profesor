@@ -123,22 +123,21 @@ namespace API.Controllers
 
         
         [Authorize(Roles = "admin,teacher")]
-        [HttpDelete("deleteRepository")]
-        public IActionResult RemoveStudentFromRepository([FromBody] UserRepositoryDTO userRepository)
+        [HttpDelete("removeStudentFromRepository/{repoID}/{studentID}")]
+        public IActionResult RemoveStudentFromRepository(int repoID, int studentID)
         {
-            if (userRepository == null)
-                return BadRequest("Nie można wyrzucić pustego ucznia");
+        
 
             if (!ModelState.IsValid)
                 return BadRequest("Coś poszło nie tak.");
 
-            if (!_repositoryService.UserExistsInRepository(userRepository.UserID, userRepository.RepositoryID))
+            if (!_repositoryService.UserExistsInRepository(repoID, studentID))
                 return NotFound("Dane repozytorium nie posiada tego ucznia.");
 
-            var userRepositoryMap = _mapper.Map<UserRepository>(userRepository);
+            var userRepository = _repositoryService.GetUserRepository(repoID, studentID);
 
 
-            if (!_repositoryService.RemoveStudentFromRepository(userRepositoryMap))
+            if (!_repositoryService.RemoveStudentFromRepository(userRepository))
                 return BadRequest("Coś poszło nie tak podczas usuwania ucznia z repozytorium.");
 
             return Ok("Usunięto ucznia z repozytorium");
@@ -292,6 +291,29 @@ namespace API.Controllers
 
         }
 
+        [Authorize(Roles = "admin,teacher")]
+        [HttpGet("acceptedStudentinRepository/{repositoryID}")]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<UserRepositoryDTO>))]
+        [ProducesResponseType(400)]
+        public IActionResult GetAcceptedStudentsForRepository(int repositoryID)
+        {
+            var userRepositories = _repositoryService.GetAcceptedStudents(repositoryID);
+
+            var usersToConfirmDto = userRepositories.Select(ur => new UserRepositoryDTO
+            {
+                EnterDate = ur.EnterDate,
+                HasPrivilage = false,
+                IsMember = ur.IsMember,
+                UserID = ur.UserID,
+                RepositoryID = ur.RepositoryID
+            }).ToList();
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Coś poszło nie tak");
+            }
+            return Ok(usersToConfirmDto);
+        }
 
     }
 }
