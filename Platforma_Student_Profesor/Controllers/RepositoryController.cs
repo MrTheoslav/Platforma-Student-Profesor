@@ -21,11 +21,13 @@ namespace API.Controllers
         private readonly IRepositoryService _repositoryService;
         private readonly IMapper _mapper;
         private readonly IUserContextService _userContextService;
-        public RepositoryController(IRepositoryService repositoryService, IMapper mapper, IUserContextService userContextService)
+        private readonly IAccountService _accountService;
+        public RepositoryController(IRepositoryService repositoryService, IMapper mapper, IUserContextService userContextService, IAccountService accountService)
         {
             _repositoryService = repositoryService;
             _mapper = mapper;
             _userContextService = userContextService;
+            _accountService = accountService;
         }
 
         [Authorize(Roles = "admin,teacher,student")]
@@ -123,22 +125,21 @@ namespace API.Controllers
 
         
         [Authorize(Roles = "admin,teacher")]
-        [HttpDelete("deleteRepository")]
-        public IActionResult RemoveStudentFromRepository([FromBody] UserRepositoryDTO userRepository)
+        [HttpDelete("removeStudentFromRepository/{repoID}/{studentID}")]
+        public IActionResult RemoveStudentFromRepository(int repoID, int studentID)
         {
-            if (userRepository == null)
-                return BadRequest("Nie można wyrzucić pustego ucznia");
+        
 
             if (!ModelState.IsValid)
                 return BadRequest("Coś poszło nie tak.");
 
-            if (!_repositoryService.UserExistsInRepository(userRepository.UserID, userRepository.RepositoryID))
+            if (!_repositoryService.UserExistsInRepository(repoID, studentID))
                 return NotFound("Dane repozytorium nie posiada tego ucznia.");
 
-            var userRepositoryMap = _mapper.Map<UserRepository>(userRepository);
+            var userRepository = _repositoryService.GetUserRepository(repoID, studentID);
 
 
-            if (!_repositoryService.RemoveStudentFromRepository(userRepositoryMap))
+            if (!_repositoryService.RemoveStudentFromRepository(userRepository))
                 return BadRequest("Coś poszło nie tak podczas usuwania ucznia z repozytorium.");
 
             return Ok("Usunięto ucznia z repozytorium");
@@ -246,26 +247,24 @@ namespace API.Controllers
 
         [Authorize(Roles = "admin,teacher")]
         [HttpGet("accountToConfirm/{repositoryID}")]
-        [ProducesResponseType(200, Type = typeof(IEnumerable<UserRepositoryDTO>))]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<UserDTO>))]
         [ProducesResponseType(400)]
         public IActionResult GetAccountsToConfirm(int repositoryID)
         {
             var userRepositories = _repositoryService.GetStudentsToConfirm(repositoryID);
+           ICollection<UserDTO> userDTOs = new List<UserDTO>();
 
-            var usersToConfirmDto = userRepositories.Select(ur => new UserRepositoryDTO
+            foreach (var userRepositoryDTO in userRepositories)
             {
-                EnterDate = ur.EnterDate,
-                HasPrivilage = false,
-                IsMember = ur.IsMember,
-                UserID = ur.UserID,
-                RepositoryID = ur.RepositoryID
-            }).ToList();
-
+                var userDto = _mapper.Map<UserDTO>(_accountService.GetUserById(userRepositoryDTO.UserID));
+                userDTOs.Add(userDto);
+            }
+           
             if (!ModelState.IsValid)
             {
                 return BadRequest("Coś poszło nie tak");
             }
-            return Ok(usersToConfirmDto);
+            return Ok(userDTOs);
         }
 
 
@@ -292,6 +291,28 @@ namespace API.Controllers
 
         }
 
+        [Authorize(Roles = "admin,teacher")]
+        [HttpGet("acceptedStudentinRepository/{repositoryID}")]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<UserRepositoryDTO>))]
+        [ProducesResponseType(400)]
+        public IActionResult GetAcceptedStudentsForRepository(int repositoryID)
+        {
+            var userRepositories = _repositoryService.GetAcceptedStudents(repositoryID);
+            ICollection<UserDTO> userDTOs = new List<UserDTO>();
+
+            foreach (var userRepositoryDTO in userRepositories)
+            {
+                var userDto = _mapper.Map<UserDTO>(_accountService.GetUserById(userRepositoryDTO.UserID));
+                userDTOs.Add(userDto);
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Coś poszło nie tak");
+            }
+            return Ok(userDTOs);
+            
+        }
 
     }
 }

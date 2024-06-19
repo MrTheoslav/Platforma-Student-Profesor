@@ -187,6 +187,11 @@ namespace API.Services
             return _context.UsersRepository.Where(ur => ur.IsMember==false && ur.RepositoryID == repositoryID).ToList();
         }
 
+        public ICollection<UserRepository> GetAcceptedStudents(int repositoryID)
+        {
+            return _context.UsersRepository.Where(ur => ur.IsMember == true && ur.RepositoryID == repositoryID).ToList();
+        }
+
 
         public bool ConfirmUser(int userID, int repositoryID)
         {
@@ -200,6 +205,11 @@ namespace API.Services
             }
             else { return false; }
 
+
+        }
+
+        public UserRepository GetUserRepository(int repositoryID, int userID) {
+            return _context.UsersRepository.Where(ur => ur.UserID == userID && ur.RepositoryID == repositoryID).FirstOrDefault();
 
         }
 
