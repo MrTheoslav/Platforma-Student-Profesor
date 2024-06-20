@@ -8,9 +8,10 @@ using MODEL.Models;
 
 namespace API.Controllers
 {
+    [AllowAnonymous]
+    [Authorize]
     [ApiController]
     [Route("API/[controller]")]
-    [AllowAnonymous]
     public class AccountController:ControllerBase
     {
         private readonly IAccountService _accountService;
@@ -29,10 +30,34 @@ namespace API.Controllers
             return Ok();
         }
 
+       [Authorize(Roles = "admin,teacher,student")]
+        [HttpPut("updateUser")]
+        public IActionResult UpdateUser([FromBody] UpdateUserDTO updateUserDto)
+
+        {
+            LoginDto loginDto = new LoginDto()
+            {
+                Email = updateUserDto.Email,
+                Password = updateUserDto.CurrentPassword
+            };
+
+            string token = _accountService.GenerateJwt(loginDto);
+
+             if (token.Equals("PasswordNotCorrect"))
+            {
+                return BadRequest("Incorrect current pasword");
+            }
+
+            _accountService.UpdateUser(updateUserDto);
+            return Ok();
+        }
+
+
         [HttpPost("login")]
         public IActionResult Login([FromBody] LoginDto dto)
         {
             string token = _accountService.GenerateJwt(dto);
+
             if (token.Equals("userIsNull"))
             {
                 return BadRequest("Incorrect password or emial");
@@ -87,12 +112,26 @@ namespace API.Controllers
             return Ok(usersToConfirmDto);
         }
 
+        [Authorize(Roles = "admin")]
+        [HttpGet("ConfirmedAccount")]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<UserDTO>))]
+        [ProducesResponseType(400)]
+        public IActionResult GetConfirmedAcount()
+        {
+            var usersToConfirmDto = _mapper.Map<List<UserDTO>>(_accountService.GetConfirmedUser());
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Coś poszło nie tak");
+            }
+            return Ok(usersToConfirmDto);
+        }
 
         [Authorize(Roles = "admin")]
-        [HttpPost("confirmUSer/{userID}/{isApproved}")]
-        public IActionResult ConfirmUser(int userID, bool isApproved)
+        [HttpPost("confirmUSer/{userID}")]
+        public IActionResult ConfirmUser(int userID)
         {
-            bool decision = _accountService.ConfirmUser(isApproved, userID);
+            bool decision = _accountService.ConfirmUser(userID);
 
             if (!ModelState.IsValid)
             {
@@ -111,6 +150,29 @@ namespace API.Controllers
 
         }
 
+        [Authorize(Roles = "admin,teacher,student")]
+        [HttpGet("isApproved")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        public IActionResult isApproved() 
+        {
+            var user = _accountService.GetUser();
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Coś poszło nie tak");
+            }
+            if (user == null)
+            {
+                return BadRequest("Nie udało się znaleźć takiego użytkownika");
+            }
+
+            else
+            {
+                return Ok(user.IsApproved);
+            }
+
+
+        }
 
     }
 }

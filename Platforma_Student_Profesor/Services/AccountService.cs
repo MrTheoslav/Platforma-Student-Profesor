@@ -58,6 +58,31 @@ namespace API.Services
 
         }
 
+        public void UpdateUser(UpdateUserDTO dto)
+        {
+            
+            var user = _context.Users.SingleOrDefault(u => u.UserID == dto.UserID);
+            if (user == null)
+            {
+                throw new InvalidOperationException("User not found");
+            }
+
+         
+            user.Email = dto.Email;
+            user.UserFirstName = dto.UserFirstName;
+            user.UserLastName = dto.UserLastName;
+
+          
+            var hashedPassword = _passwordHasher.HashPassword(user, dto.Password);
+            user.Password = hashedPassword;
+
+         
+            _context.Update(user);
+
+           
+            Save();
+        }
+
         public string GenerateJwt(LoginDto dto)
         {
             var user = _context.Users
@@ -121,27 +146,31 @@ namespace API.Services
             return _context.Users.Where(u => u.IsApproved == false).ToList();
         }
 
+        public ICollection<User> GetConfirmedUser()
+        {
+            return _context.Users.Where(u => u.IsApproved == true).ToList();
+        }
 
-        public bool ConfirmUser(bool decision, int userID)
+        public bool ConfirmUser(int userID)
         {
             User user = GetUserById(userID);
 
-            if(user is null)
-            {
-                return false;
-            }
-
-            if(decision == true)
-            {
                 user.IsApproved = true;
                 Save();
                 return true;
-            }
-            else
-            {
-                return false;
-            }
+            
+           
 
+        }
+
+        public bool IsApproved(int userID)
+        {
+            User user = GetUserById(userID);
+            if(user != null) { return user.IsApproved; }
+
+            else { return false; }
+            
+           
         }
 
     }

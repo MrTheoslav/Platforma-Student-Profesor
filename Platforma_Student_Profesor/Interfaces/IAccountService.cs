@@ -14,6 +14,10 @@ namespace API.Interfaces
 
         ICollection<User> GetUsersToConfirm();
 
-        bool ConfirmUser(bool decision, int userID);
+        bool ConfirmUser( int userID);
+
+        void UpdateUser(UpdateUserDTO dto);
+        ICollection<User> GetConfirmedUser();
+        bool IsApproved(int userID);
     }
 }
