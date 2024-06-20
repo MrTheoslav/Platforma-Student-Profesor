@@ -100,6 +100,17 @@ namespace API.Services
                 return false;
             }
 
+            var UserAssignments = GetUserAssigmnents(assignment.AssignmentID);
+
+            foreach (var ua in UserAssignments)
+            {
+                if (!removeUserAssignment(ua))
+                    return false;
+            }
+
+            if(!removeFileConnectionWithAssignment(assignment.AssignmentID))
+                return false;
+
             _context.Remove(assignment);
 
             return Save();
@@ -143,6 +154,24 @@ namespace API.Services
         public bool CommentOrMark(UserAssigmnent userAssigmnent)
         {
             _context.UserAssigmnents.Update(userAssigmnent);
+            return Save();
+        }
+
+        private bool removeUserAssignment(UserAssigmnent userAssigmnent)
+        {
+            _context.UserAssigmnents.Remove(userAssigmnent);
+            return Save();
+        }
+
+        private bool removeFileConnectionWithAssignment(int assignmentID)
+        {
+            var files = _context.Files.Where(f => f.AssigmentID == assignmentID).ToList();
+            
+            foreach (var file in files)
+            {
+                _context.Remove(file);
+            }
+
             return Save();
         }
     }

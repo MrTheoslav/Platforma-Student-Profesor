@@ -12,5 +12,6 @@ namespace API.Interfaces
         MODEL.Models.File GetInfoAboutSender(int assignmentID, int userId, string file);
         Task<bool> WriteFile(MODEL.Models.File infoAboutSender, IFormFile file);
         bool FileExists(MODEL.Models.File file);
+        bool RemoveUserFile(MODEL.Models.File file);
     }
 }

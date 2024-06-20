@@ -102,5 +102,26 @@ namespace API.Controllers
 
             return File(fileStream, contentType, fileName);
         }
+
+        [HttpDelete]
+        [Route("RemoveFile")]
+        public IActionResult RemoveFile(FileDTO fileDTO)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Coś poszło nie tak");
+            }
+
+            var fileMap = _mapper.Map<MODEL.Models.File>(fileDTO);
+
+            if (_fileService.FileExists(fileMap))
+                return NotFound("Nie znaleziono pliku do usunięcia");
+
+            if (!_fileService.RemoveUserFile(fileMap))
+                return BadRequest("Coś poszło nie tak podczas usuwania pliku");
+
+            return Ok("Plik został poprawnie usunięty");
+        }
+
     }
 }
