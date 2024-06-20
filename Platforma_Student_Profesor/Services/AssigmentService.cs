@@ -2,11 +2,12 @@
 using API.Interfaces;
 using DAL;
 using Microsoft.AspNetCore.Authorization;
+using MODEL.DTO;
 using MODEL.Models;
 
 namespace API.Services
 {
-    public class AssigmentService: IAssigmentService
+    public class AssigmentService : IAssigmentService
     {
         private readonly DataContext _context;
         private readonly IAuthorizationService _authorizationService;
@@ -14,7 +15,7 @@ namespace API.Services
         private readonly IUserContextService _userContextService;
 
 
-        public AssigmentService(DataContext context, IAuthorizationService authorizationService, IUserContextService userContextService )
+        public AssigmentService(DataContext context, IAuthorizationService authorizationService, IUserContextService userContextService)
         {
             _context = context;
             _authorizationService = authorizationService;
@@ -111,13 +112,38 @@ namespace API.Services
 
         public ICollection<Assignment> GetAssignmentsForRepository(int repositoryID)
         {
-            return _context.Assignments.Where(x=>x.RepositoryID == repositoryID).ToList();
+            return _context.Assignments.Where(x => x.RepositoryID == repositoryID).ToList();
 
         }
 
         public Assignment GetAssignmentByID(int id)
         {
             return _context.Assignments.Where(a => a.AssignmentID == id).First();
+        }
+
+        public bool UserAssigmnentExists(int assignmentID, int userID)
+        {
+            return _context.UserAssigmnents.Where(ua => ua.AssigmnentID == assignmentID && ua.UserID == userID).Any();
+        }
+        public bool UserAssigmnentExists(int assignmentID)
+        {
+            return _context.UserAssigmnents.Where(ua => ua.AssigmnentID == assignmentID).Any();
+        }
+
+        public UserAssigmnent GetUserAssigmnent(int assignmentID, int userID)
+        {
+            return _context.UserAssigmnents.Where(ua => ua.AssigmnentID == assignmentID && ua.UserID == userID).First();
+        }
+
+        public ICollection<UserAssigmnent> GetUserAssigmnents(int assignmentID)
+        {
+            return _context.UserAssigmnents.Where(ua => ua.AssigmnentID == assignmentID).ToList();
+        }
+
+        public bool CommentOrMark(UserAssigmnent userAssigmnent)
+        {
+            _context.UserAssigmnents.Update(userAssigmnent);
+            return Save();
         }
     }
 }

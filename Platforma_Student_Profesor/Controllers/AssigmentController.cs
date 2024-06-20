@@ -12,7 +12,7 @@ namespace API.Controllers
     [Authorize]
     [ApiController]
     [Route("API/[controller]")]
-    public class AssigmentController: ControllerBase
+    public class AssigmentController : ControllerBase
     {
         private readonly IAssigmentService _assigmentService;
         private readonly IMapper _mapper;
@@ -122,6 +122,61 @@ namespace API.Controllers
             }
 
             return Ok(assignmentDTO);
+        }
+        [Authorize(Roles = "admin,teacher,student")]
+        [HttpGet("getMarkAndComment/{assigmnentID}/{userID}")]
+        [ProducesResponseType(200, Type = typeof(UserAssigmnent))]
+        [ProducesResponseType(400)]
+        public IActionResult GetMarkAndComment(int assigmnentID, int userID)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Coś poszło nie tak");
+            }
+
+            if (!_assigmentService.UserAssigmnentExists(assigmnentID, userID))
+            {
+                return NotFound("Nie znaleziono oceny");
+            }
+
+            var userAssignment = _mapper.Map<UserAssigmnentDTO>(_assigmentService.GetUserAssigmnent(assigmnentID, userID));
+
+            return Ok(userAssignment);
+        }
+        [Authorize(Roles = "admin,teacher")]
+        [HttpGet("getUserAssignments/{assigmnentID}")]
+        [ProducesResponseType(200, Type = typeof(UserAssigmnent))]
+        [ProducesResponseType(400)]
+        public IActionResult GetUserAssignments(int assigmnentID)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Coś poszło nie tak");
+            }
+
+            if (!_assigmentService.UserAssigmnentExists(assigmnentID))
+            {
+                return NotFound("Nie znaleziono połączenia");
+            }
+            var userAssignments = _mapper.Map<List<UserAssigmnentDTO>>(_assigmentService.GetUserAssigmnents(assigmnentID));
+
+            return Ok(userAssignments);
+        }
+        [Authorize(Roles = "admin,teacher")]
+        [HttpPost("CommentAndMark")]
+        public IActionResult CommentAndMark(UserAssigmnentDTO userAssigmnentDTO)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Coś poszło nie tak");
+            }
+
+            var ua = _mapper.Map<UserAssigmnent>(userAssigmnentDTO);
+
+            if (!_assigmentService.CommentOrMark(ua))
+                return BadRequest("Nie zapisano komentarza ani oceny");
+
+            return Ok("Utworzono komentarz oraz ocenę");
         }
     }
 }

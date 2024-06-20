@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.Options;
 using MODEL.Models;
 using System.ComponentModel;
+using System.Reflection.Metadata.Ecma335;
 
 namespace API.Services
 {
@@ -23,7 +24,7 @@ namespace API.Services
         {
             try
             {
-                var fullFilePath = Path.Combine(filePath ,GetFilePath(infoAboutSender));
+                var fullFilePath = Path.Combine(filePath, GetFilePath(infoAboutSender));
 
                 if (!Directory.Exists(fullFilePath))
                 {
@@ -37,11 +38,19 @@ namespace API.Services
                     await file.CopyToAsync(stream);
                 }
 
-                infoAboutSender.FileName= file.FileName;
+                infoAboutSender.FileName = file.FileName;
 
                 _context.Add(infoAboutSender);
 
-                return _context.SaveChanges() != 0;
+                UserAssigmnent userAssigmnent = new UserAssigmnent() { 
+                UserID = infoAboutSender.UserID,
+                AssigmnentID = infoAboutSender.AssigmentID,
+                SendDate = DateTime.Now,
+                };
+
+                createUserAssignment(userAssigmnent);
+
+                return _context.SaveChanges() > 0;
             }
             catch (Exception)
             {
@@ -60,7 +69,7 @@ namespace API.Services
         public async Task<(FileStream, string)> DownloadFile(MODEL.Models.File infoAboutSender)
         {
 
-            var fullFilePath = Path.Combine(filePath, GetFilePath(infoAboutSender) ,infoAboutSender.FileName);
+            var fullFilePath = Path.Combine(filePath, GetFilePath(infoAboutSender), infoAboutSender.FileName);
 
             var provider = new FileExtensionContentTypeProvider();
             if (!provider.TryGetContentType(fullFilePath, out var contentType))
@@ -92,5 +101,20 @@ namespace API.Services
             return _context.Files.Where(f => f.AssigmentID == assignmentID && f.UserID == userId && f.FileName == fileName).FirstOrDefault();
         }
 
+        public bool FileExists(MODEL.Models.File file)
+        {
+            return _context.Files.Where(f => f.AssigmentID == file.AssigmentID && f.UserID == file.UserID && f.FileName == file.FileName).Any();
+        }
+
+        private bool userAssignmentExist(int userID, int assignmentID)
+        {
+            return _context.UserAssigmnents.Where(ua => ua.UserID == userID && ua.AssigmnentID == assignmentID).Any();
+        }
+
+        private void createUserAssignment(UserAssigmnent userAssigmnent)
+        {
+            if (!userAssignmentExist(userAssigmnent.UserID, userAssigmnent.AssigmnentID))
+                _context.UserAssigmnents.Add(userAssigmnent);
+        }
     }
 }

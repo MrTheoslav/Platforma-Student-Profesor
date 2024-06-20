@@ -41,8 +41,8 @@ namespace API.Controllers
             foreach (var file in files)
             {
 
-                //if (infoAboutSender == null)
-                //    return BadRequest("Brak podanych informacji na temat zadania/ucznia przesyłającego zadanie");
+                if (infoAboutSender == null)
+                    return BadRequest("Brak podanych informacji na temat zadania/ucznia przesyłającego zadanie");
 
                 if (file == null)
                     return BadRequest("Brak wysłanego pliku");
@@ -50,9 +50,10 @@ namespace API.Controllers
                 if (!ModelState.IsValid)
                     return BadRequest("Coś poszło nie tak podczas przesyłania pliku.");
 
-                //Check if student sent assigmnent
-
                 var fileMap = _mapper.Map<MODEL.Models.File>(infoAboutSender);
+
+                if (_fileService.FileExists(fileMap))
+                    return BadRequest("Podany plik istnieje. Spróbuj zmienić nazwę pliku");
 
                 if (await _fileService.WriteFile(fileMap, file))
                     count++;
