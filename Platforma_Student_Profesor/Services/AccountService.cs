@@ -46,7 +46,9 @@ namespace API.Services
                 Email = dto.Email,
                 RoleID = dto.RoleId,
                 UserFirstName = dto.UserFirstName,
-                UserLastName = dto.UserLastName
+                UserLastName = dto.UserLastName,
+                EnterDate = DateTime.Now,
+                
 
             };
 
