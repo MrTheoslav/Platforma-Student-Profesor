@@ -20,6 +20,12 @@ namespace API.Services
             _appSettings = appSettings.CurrentValue;
             _context = context;
         }
+
+        private bool Save()
+        {
+            return _context.SaveChanges() > 0;
+        }
+
         public async Task<bool> WriteFile(MODEL.Models.File infoAboutSender, IFormFile file)
         {
             try
@@ -50,7 +56,7 @@ namespace API.Services
 
                 createUserAssignment(userAssigmnent);
 
-                return _context.SaveChanges() > 0;
+                return Save();
             }
             catch (Exception)
             {
@@ -115,6 +121,25 @@ namespace API.Services
         {
             if (!userAssignmentExist(userAssigmnent.UserID, userAssigmnent.AssigmnentID))
                 _context.UserAssigmnents.Add(userAssigmnent);
+        }
+
+        public bool RemoveUserFile(MODEL.Models.File file)
+        {
+            var rep = GetRepository(file.AssigmentID);
+            var filePath = Path.Combine(_appSettings.FileDirectory ,rep.RepositoryID.ToString(), file.AssigmentID.ToString(), file.UserID.ToString(), file.FileName);
+
+            System.IO.File.Delete(filePath);
+
+            _context.Remove(file);
+
+            return Save();
+        }
+
+        public MODEL.Models.File GetFile(int userID, int assignmentID, string fileName)
+        {
+            var file = _context.Files.Where(f => f.UserID == userID && f.AssigmentID == assignmentID && f.FileName == fileName).FirstOrDefault();
+
+            return file;
         }
     }
 }
