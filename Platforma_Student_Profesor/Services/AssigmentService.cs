@@ -93,12 +93,6 @@ namespace API.Services
 
         public bool DeleteAssignment(Assignment assignment)
         {
-            var authorizationResult = _authorizationService.AuthorizeAsync(_userContextService.User, assignment, new ResourceOperationRequirement(ResourceOperation.Update)).Result;
-
-            if (!authorizationResult.Succeeded)
-            {
-                return false;
-            }
 
             var UserAssignments = GetUserAssigmnents(assignment.AssignmentID);
 
@@ -108,7 +102,7 @@ namespace API.Services
                     return false;
             }
 
-            if(!removeFileConnectionWithAssignment(assignment.AssignmentID))
+            if (!removeFileConnectionWithAssignment(assignment.AssignmentID))
                 return false;
 
             _context.Remove(assignment);
@@ -165,14 +159,19 @@ namespace API.Services
 
         private bool removeFileConnectionWithAssignment(int assignmentID)
         {
-            var files = _context.Files.Where(f => f.AssigmentID == assignmentID).ToList();
-            
-            foreach (var file in files)
+            try
             {
-                _context.Remove(file);
-            }
+                var files = _context.Files.Where(f => f.AssigmentID == assignmentID).ToList();
 
-            return Save();
+                foreach (var file in files)
+                {
+                    _context.Remove(file);
+                }
+
+                return true;
+            }
+            catch (Exception)
+            { return false; }
         }
     }
 }
