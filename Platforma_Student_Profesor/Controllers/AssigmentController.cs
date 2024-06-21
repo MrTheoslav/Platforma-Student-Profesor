@@ -178,5 +178,8 @@ namespace API.Controllers
 
             return Ok("Utworzono komentarz oraz ocenę");
         }
+
+       
+
     }
 }

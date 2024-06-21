@@ -19,5 +19,6 @@ namespace API.Interfaces
         void UpdateUser(UpdateUserDTO dto);
         ICollection<User> GetConfirmedUser();
         bool IsApproved(int userID);
+        bool DeleteUser(UserDTO dto);
     }
 }

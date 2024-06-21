@@ -18,5 +18,6 @@ namespace API.Interfaces
         UserAssigmnent GetUserAssigmnent(int assignmentID, int userID);
         bool CommentOrMark(UserAssigmnent userAssigmnent);
         ICollection<UserAssigmnent> GetUserAssigmnents(int assignmentID);
+        bool removeFileForUSer(int userID);
     }
 }

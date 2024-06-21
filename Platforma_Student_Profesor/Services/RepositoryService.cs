@@ -15,12 +15,14 @@ namespace API.Services
         private readonly IAuthorizationService _authorizationService;
 
         private readonly IUserContextService _userContextService;
+        private readonly IAssigmentService _assigmentService;
 
-        public RepositoryService(DataContext context, IAuthorizationService authorizationService, IUserContextService userContextService)
+        public RepositoryService(DataContext context, IAuthorizationService authorizationService, IUserContextService userContextService, IAssigmentService assigmentService)
         {
             _context = context;
             _authorizationService = authorizationService;
             _userContextService = userContextService;
+            _assigmentService = assigmentService;   
         }
 
         public bool Save()
@@ -78,14 +80,27 @@ namespace API.Services
         {
             var authorizationResult = _authorizationService.AuthorizeAsync(_userContextService.User, repository, new ResourceOperationRequirement(ResourceOperation.Update)).Result;
 
+            var assigmentForRepository = _assigmentService.GetAssignmentsForRepository(repository.RepositoryID);
+
+            foreach( var assigment in assigmentForRepository)
+            {
+                if (!_assigmentService.DeleteAssignment(assigment))
+                    return false;
+            }
+
             if (!authorizationResult.Succeeded)
             {
                 return false;
             }
 
-            var userRepositoryToDelate = _context.UsersRepository.Where(x => x.UserID == _userContextService.GetUserId).Where(u => u.RepositoryID == repository.RepositoryID).FirstOrDefault();
+            var userRepositoryToDelate = _context.UsersRepository.Where(u => u.RepositoryID == repository.RepositoryID).ToList();
+
+            foreach( var user in userRepositoryToDelate)
+            {
+                _context.Remove(user);
+            }
+
             _context.Remove(repository);
-            _context.Remove(userRepositoryToDelate);
             return Save();
         }
 
@@ -139,9 +154,9 @@ namespace API.Services
 
   
 
-        public ICollection<Repository> GetRepositoryForUser()
+        public ICollection<Repository> GetRepositoryForUser(int userId)
         {
-            int userId = (int)_userContextService.GetUserId;
+           
            
             ICollection<UserRepository> userRepositories = _context.UsersRepository.Where(x => x.UserID == userId).ToList();
             ICollection<Repository> userRepositoriesList = new List<Repository>();
@@ -158,6 +173,8 @@ namespace API.Services
 
             return userRepositoriesList;
         }
+
+
 
 
         public UserRepository UserConfirmAndExist(int userID, int repositoryID)

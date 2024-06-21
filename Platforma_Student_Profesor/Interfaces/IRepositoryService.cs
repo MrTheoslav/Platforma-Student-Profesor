@@ -17,8 +17,8 @@ namespace API.Interfaces
         bool UserExistsInRepository(int userID, int repositoryID);
         bool RemoveStudentFromRepository(UserRepository userRepository);
         bool AddStudentToRepository(UserRepository userRepository);
-      
-        ICollection<Repository> GetRepositoryForUser();
+
+        ICollection<Repository> GetRepositoryForUser(int userId);
         UserRepository UserConfirmAndExist(int userID, int repositoryID);
         bool ConfirmUser(int repositoryID, int userID);
         ICollection<UserRepository> GetStudentsToConfirm(int repositoryID);

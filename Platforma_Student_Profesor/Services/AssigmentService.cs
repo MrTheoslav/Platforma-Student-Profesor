@@ -173,5 +173,22 @@ namespace API.Services
             catch (Exception)
             { return false; }
         }
+
+        public bool removeFileForUSer(int userID)
+        {
+            try
+            {
+                var files = _context.Files.Where(f=>f.UserID == userID).ToList();
+                foreach (var file in files)
+                {
+                    _context.Remove(file);
+                }
+
+                return true;
+
+
+            }
+            catch (Exception) { return false; }
+        }
     }
 }

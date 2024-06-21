@@ -174,5 +174,25 @@ namespace API.Controllers
 
         }
 
+
+
+        [Authorize(Roles = "admin")]
+        [HttpDelete("deleteUser")]
+        public IActionResult DeleteUser(UserDTO user)
+        {
+            if (user == null)
+                return BadRequest("Użytkownik do usunięcia nie może być pusty");
+
+            if (!ModelState.IsValid)
+                return BadRequest("Coś poszło nie tak");
+
+
+            if (!_accountService.DeleteUser(user))
+                return BadRequest("Coś poszło nie tak podczas usuwania");
+
+            return Ok("Usunięto użytkownika");
+        }
+
+
     }
 }

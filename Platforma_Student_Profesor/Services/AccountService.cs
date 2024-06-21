@@ -21,14 +21,18 @@ namespace API.Services
         public AuthenticationSettings _authenticationSettings;
         private readonly IRoleService _roleService;
         private readonly IUserContextService _userContextService;
+        private readonly IAssigmentService _assigmentService;
+        private readonly IRepositoryService _repositoryService;
 
-        public AccountService(DataContext context, IPasswordHasher<User> passwordHasher, AuthenticationSettings authenticationSettings, IRoleService roleService, IUserContextService userContextService)
+        public AccountService(DataContext context, IPasswordHasher<User> passwordHasher, AuthenticationSettings authenticationSettings, IRoleService roleService, IUserContextService userContextService, IAssigmentService assigmentService, IRepositoryService repositoryService)
         {
             _context = context;
             _passwordHasher = passwordHasher;
             _authenticationSettings = authenticationSettings;
             _roleService = roleService;
             _userContextService = userContextService;
+            _assigmentService = assigmentService;
+            _repositoryService = repositoryService;
         }
 
 
@@ -173,6 +177,39 @@ namespace API.Services
             else { return false; }
             
            
+        }
+
+        public bool DeleteUser(UserDTO dto)
+        {
+            var user = _context.Users.SingleOrDefault(u => u.UserID == dto.UserID);
+            if (user == null)
+            {
+                throw new InvalidOperationException("User not found");
+                
+            }
+            if (user.RoleID == 3)
+            {
+                if (!_assigmentService.removeFileForUSer(user.UserID))
+                    return false;
+            }
+            else if (user.RoleID ==2)
+            {
+                var repositoryForUser = _repositoryService.GetRepositoryForUser(user.UserID);
+
+                if (repositoryForUser != null)
+                {
+                    foreach(var repo in repositoryForUser)
+                    {
+                        _repositoryService.DeleteRepository(repo);
+                    }
+                }
+               
+            }
+            _context.Remove(user);
+
+
+            return Save();
+
         }
 
     }

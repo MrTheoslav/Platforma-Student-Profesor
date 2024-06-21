@@ -123,7 +123,29 @@ namespace API.Controllers
             return Ok("Zaktualizowano repozytorium");
         }
 
-        
+        [Authorize(Roles = "admin,teacher")]
+        [HttpDelete("deleteRepository")]
+        public IActionResult DeleteRepository(RepositoryDTO repositoryDTO)
+        {
+            if (repositoryDTO == null)
+                return BadRequest("repozytorium do usunięcia nie może być puste");
+
+            if (!ModelState.IsValid)
+                return BadRequest("Coś poszło nie tak");
+
+            if (!_repositoryService.RepositoryExists(repositoryDTO.RepositoryID))
+                return BadRequest("Nie istenieje takie repozytorium");
+
+            //CreateBy must be same as before!!!!
+            var repositoryMap = _mapper.Map<Repository>(repositoryDTO);
+
+
+            if (!_repositoryService.DeleteRepository(repositoryMap))
+                return BadRequest("Coś poszło nie tak podczas usuwania");
+
+            return Ok("Usunięto repozytorium");
+        }
+
         [Authorize(Roles = "admin,teacher")]
         [HttpDelete("removeStudentFromRepository/{repoID}/{studentID}")]
         public IActionResult RemoveStudentFromRepository(int repoID, int studentID)
@@ -186,7 +208,7 @@ namespace API.Controllers
         public IActionResult GetRepositoryForUser()
         {
            
-            var repositoryDTOs = _mapper.Map<List<RepositoryDTO>>(_repositoryService.GetRepositoryForUser());
+            var repositoryDTOs = _mapper.Map<List<RepositoryDTO>>(_repositoryService.GetRepositoryForUser((int)_userContextService.GetUserId));
 
             if (!ModelState.IsValid)
             {
