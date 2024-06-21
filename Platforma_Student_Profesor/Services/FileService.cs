@@ -126,13 +126,20 @@ namespace API.Services
         public bool RemoveUserFile(MODEL.Models.File file)
         {
             var rep = GetRepository(file.AssigmentID);
-            var filePath = Path.Combine(rep.RepositoryID.ToString(), file.AssigmentID.ToString(), file.UserID.ToString(), file.FileName);
+            var filePath = Path.Combine(_appSettings.FileDirectory ,rep.RepositoryID.ToString(), file.AssigmentID.ToString(), file.UserID.ToString(), file.FileName);
 
             System.IO.File.Delete(filePath);
 
             _context.Remove(file);
 
             return Save();
+        }
+
+        public MODEL.Models.File GetFile(int userID, int assignmentID, string fileName)
+        {
+            var file = _context.Files.Where(f => f.UserID == userID && f.AssigmentID == assignmentID && f.FileName == fileName).FirstOrDefault();
+
+            return file;
         }
     }
 }

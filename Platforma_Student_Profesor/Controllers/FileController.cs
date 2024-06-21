@@ -112,12 +112,12 @@ namespace API.Controllers
                 return BadRequest("Coś poszło nie tak");
             }
 
-            var fileMap = _mapper.Map<MODEL.Models.File>(fileDTO);
+            var file = _fileService.GetFile(fileDTO.UserID, fileDTO.AssigmentID,fileDTO.FileName);
 
-            if (_fileService.FileExists(fileMap))
+            if (file == null)
                 return NotFound("Nie znaleziono pliku do usunięcia");
 
-            if (!_fileService.RemoveUserFile(fileMap))
+            if (!_fileService.RemoveUserFile(file))
                 return BadRequest("Coś poszło nie tak podczas usuwania pliku");
 
             return Ok("Plik został poprawnie usunięty");
