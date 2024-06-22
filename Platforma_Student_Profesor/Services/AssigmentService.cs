@@ -79,13 +79,6 @@ namespace API.Services
 
         public bool UpdateAssignment(Assignment assignment)
         {
-            var authorizationResult = _authorizationService.AuthorizeAsync(_userContextService.User, assignment, new ResourceOperationRequirement(ResourceOperation.Update)).Result;
-
-            if (!authorizationResult.Succeeded)
-            {
-                return false;
-            }
-
             _context.Update(assignment);
 
             return Save();
