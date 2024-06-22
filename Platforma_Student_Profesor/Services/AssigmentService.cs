@@ -40,12 +40,7 @@ namespace API.Services
 
         public bool AddAssignment(Assignment assignment)
         {
-            //var authorizationResult = _authorizationService.AuthorizeAsync(_userContextService.User, assignment, new ResourceOperationRequirement(ResourceOperation.Update)).Result;
-
-            //if (!authorizationResult.Succeeded)
-            //{
-            //    return false;
-            //}
+            assignment.StartDate = DateTime.Now;
 
             _context.Add(assignment);
 

@@ -92,7 +92,7 @@ namespace API.Controllers
 
         [Authorize(Roles = "admin,teacher,student")]
         [HttpGet("assignmentForRepository/{repositoryID}")]
-        [ProducesResponseType(200, Type = typeof(IEnumerable<Assignment>))]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<AssignmentDTO>))]
         [ProducesResponseType(400)]
 
         public IActionResult GetAssignmentForRepository(int repositoryID)
@@ -108,7 +108,7 @@ namespace API.Controllers
 
         [Authorize(Roles = "admin,teacher,student")]
         [HttpGet("assigmnentByID/{assigmnentID}")]
-        [ProducesResponseType(200, Type = typeof(Assignment))]
+        [ProducesResponseType(200, Type = typeof(AssignmentDTO))]
         [ProducesResponseType(400)]
         public IActionResult GetAssignmentByID(int assigmnentID)
         {
@@ -125,7 +125,7 @@ namespace API.Controllers
         }
         [Authorize(Roles = "admin,teacher,student")]
         [HttpGet("getMarkAndComment/{assigmnentID}/{userID}")]
-        [ProducesResponseType(200, Type = typeof(UserAssigmnent))]
+        [ProducesResponseType(200, Type = typeof(UserAssigmnentDTO))]
         [ProducesResponseType(400)]
         public IActionResult GetMarkAndComment(int assigmnentID, int userID)
         {
@@ -145,7 +145,7 @@ namespace API.Controllers
         }
         [Authorize(Roles = "admin,teacher")]
         [HttpGet("getUserAssignments/{assigmnentID}")]
-        [ProducesResponseType(200, Type = typeof(UserAssigmnent))]
+        [ProducesResponseType(200, Type = typeof(UserAssigmnentDTO))]
         [ProducesResponseType(400)]
         public IActionResult GetUserAssignments(int assigmnentID)
         {
@@ -162,6 +162,27 @@ namespace API.Controllers
 
             return Ok(userAssignments);
         }
+
+        [Authorize(Roles = "admin,teacher,student")]
+        [HttpGet("getUserAssignment/{assigmnentID}/{userID}")]
+        [ProducesResponseType(200, Type = typeof(UserAssigmnentDTO))]
+        [ProducesResponseType(400)]
+        public IActionResult GetUserAssignment(int assigmnentID, int userID)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Coś poszło nie tak");
+            }
+
+            if (!_assigmentService.UserAssigmnentExists(assigmnentID, userID))
+            {
+                return NotFound("Nie znaleziono połączenia");
+            }
+            var userAssignment = _mapper.Map<UserAssigmnentDTO>(_assigmentService.GetUserAssigmnent(assigmnentID, userID));
+
+            return Ok(userAssignment);
+        }
+
         [Authorize(Roles = "admin,teacher")]
         [HttpPost("CommentAndMark")]
         public IActionResult CommentAndMark(UserAssigmnentDTO userAssigmnentDTO)
