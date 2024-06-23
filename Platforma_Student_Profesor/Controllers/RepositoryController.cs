@@ -155,10 +155,10 @@ namespace API.Controllers
             if (!ModelState.IsValid)
                 return BadRequest("Coś poszło nie tak.");
 
-            if (!_repositoryService.UserExistsInRepository(repoID, studentID))
+            if (!_repositoryService.UserExistsInRepository( studentID, repoID))
                 return NotFound("Dane repozytorium nie posiada tego ucznia.");
 
-            var userRepository = _repositoryService.GetUserRepository(repoID, studentID);
+            var userRepository = _repositoryService.GetUserRepository(repoID,studentID);
 
 
             if (!_repositoryService.RemoveStudentFromRepository(userRepository))
