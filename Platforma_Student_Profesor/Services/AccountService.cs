@@ -198,9 +198,13 @@ namespace API.Services
 
                 if (repositoryForUser != null)
                 {
+                    
                     foreach(var repo in repositoryForUser)
                     {
-                        _repositoryService.DeleteRepository(repo);
+                        if (repo.CreatedById == user.UserID)
+                        {
+                            _repositoryService.DeleteRepository(repo);
+                        }
                     }
                 }
                
