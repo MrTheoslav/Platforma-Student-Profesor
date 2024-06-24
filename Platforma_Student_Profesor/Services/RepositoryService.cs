@@ -80,6 +80,11 @@ namespace API.Services
         {
             var authorizationResult = _authorizationService.AuthorizeAsync(_userContextService.User, repository, new ResourceOperationRequirement(ResourceOperation.Update)).Result;
 
+            var userRole = _context.Users.Where(u => u.UserID == (int)_userContextService.GetUserId).FirstOrDefault();
+
+
+
+
             var assigmentForRepository = _assigmentService.GetAssignmentsForRepository(repository.RepositoryID);
 
             foreach( var assigment in assigmentForRepository)
@@ -88,7 +93,7 @@ namespace API.Services
                     return false;
             }
 
-            if (!authorizationResult.Succeeded)
+            if (!authorizationResult.Succeeded && userRole.RoleID != 1)
             {
                 return false;
             }
