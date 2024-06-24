@@ -178,5 +178,10 @@ namespace API.Services
             }
             catch (Exception) { return false; }
         }
+
+        public User GetUserByID(int userID)
+        {
+            return _context.Users.Where(u=>u.UserID == userID).FirstOrDefault();
+        }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using API.Interfaces;
 using Microsoft.AspNetCore.Authorization;
-using API.Services;
+using API.Helper;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using MODEL.DTO;
@@ -145,7 +145,7 @@ namespace API.Controllers
         }
         [Authorize(Roles = "admin,teacher")]
         [HttpGet("getUserAssignments/{assigmnentID}")]
-        [ProducesResponseType(200, Type = typeof(UserAssigmnentDTO))]
+        [ProducesResponseType(200, Type = typeof(UserAndAssignment))]
         [ProducesResponseType(400)]
         public IActionResult GetUserAssignments(int assigmnentID)
         {
@@ -160,12 +160,30 @@ namespace API.Controllers
             }
             var userAssignments = _mapper.Map<List<UserAssigmnentDTO>>(_assigmentService.GetUserAssigmnents(assigmnentID));
 
-            return Ok(userAssignments);
+            List<UserAndAssignment> userAndAssignments = new();
+
+            foreach (var ua in userAssignments)
+            {
+                var user = _mapper.Map<UserDTO>(_assigmentService.GetUserByID(ua.UserID));
+                UserAndAssignment uaa = new UserAndAssignment()
+                {
+                    UserID = ua.UserID,
+                    AssigmnentID = ua.AssigmnentID,
+                    UserFirstName = user.UserFirstName,
+                    UserLastName = user.UserLastName,
+                    SendDate = ua.SendDate,
+                    Mark = ua.Mark,
+                    Comment = ua.Comment,
+                };
+                userAndAssignments.Add(uaa);
+            }
+
+            return Ok(userAndAssignments);
         }
 
         [Authorize(Roles = "admin,teacher,student")]
         [HttpGet("getUserAssignment/{assigmnentID}/{userID}")]
-        [ProducesResponseType(200, Type = typeof(UserAssigmnentDTO))]
+        [ProducesResponseType(200, Type = typeof(UserAndAssignment))]
         [ProducesResponseType(400)]
         public IActionResult GetUserAssignment(int assigmnentID, int userID)
         {
@@ -180,7 +198,20 @@ namespace API.Controllers
             }
             var userAssignment = _mapper.Map<UserAssigmnentDTO>(_assigmentService.GetUserAssigmnent(assigmnentID, userID));
 
-            return Ok(userAssignment);
+            var user = _mapper.Map<UserDTO>(_assigmentService.GetUserByID(userID));
+
+            UserAndAssignment ua = new UserAndAssignment()
+            {
+                AssigmnentID = assigmnentID,
+                UserID = userID,
+                UserFirstName = user.UserFirstName,
+                UserLastName = user.UserLastName,
+                Mark = userAssignment.Mark,
+                Comment = userAssignment.Comment,
+                SendDate = userAssignment.SendDate,
+            };
+
+            return Ok(ua);
         }
 
         [Authorize(Roles = "admin,teacher")]
@@ -199,8 +230,5 @@ namespace API.Controllers
 
             return Ok("Utworzono komentarz oraz ocenę");
         }
-
-       
-
     }
 }

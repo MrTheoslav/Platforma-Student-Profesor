@@ -19,5 +19,6 @@ namespace API.Interfaces
         bool CommentOrMark(UserAssigmnent userAssigmnent);
         ICollection<UserAssigmnent> GetUserAssigmnents(int assignmentID);
         bool removeFileForUSer(int userID);
+        User GetUserByID(int userID);
     }
 }
